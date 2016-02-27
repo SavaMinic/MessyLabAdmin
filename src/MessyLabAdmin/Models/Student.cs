@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MessyLabAdmin.Models
 {
@@ -27,12 +28,13 @@ namespace MessyLabAdmin.Models
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
 
+        [NotMapped]
         [Display(Name = "Full Name")]
         public string FullName
         {
             get
             {
-                return LastName + ", " + FirstName;
+                return FirstName + " " + LastName;
             }
         }
 
