@@ -18,5 +18,8 @@ namespace MessyLabAdmin.Models
             // Add your customizations after calling base.OnModelCreating(builder);
         }
         public DbSet<Student> Student { get; set; }
+        public DbSet<Assignment> Assignment { get; set; }
+        public DbSet<Solution> Solution { get; set; }
+        public DbSet<Action> Action { get; set; }
     }
 }

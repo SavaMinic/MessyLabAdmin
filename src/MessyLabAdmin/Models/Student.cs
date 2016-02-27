@@ -37,5 +37,9 @@ namespace MessyLabAdmin.Models
         }
 
         public virtual ICollection<Assignment> Assignements { get; set; }
+
+        public virtual ICollection<Solution> Solutions { get; set; }
+
+        public virtual ICollection<Action> Actions { get; set; }
     }
 }
