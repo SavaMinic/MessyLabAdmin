@@ -18,7 +18,7 @@ namespace MessyLabAdmin.Controllers
         // GET: Students
         public IActionResult Index()
         {
-            return View(_context.Student.ToList());
+            return View(_context.Students.ToList());
         }
 
         // GET: Students/Details/5
@@ -29,7 +29,7 @@ namespace MessyLabAdmin.Controllers
                 return HttpNotFound();
             }
 
-            Student student = _context.Student.Single(m => m.ID == id);
+            Student student = _context.Students.Single(m => m.ID == id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -51,7 +51,7 @@ namespace MessyLabAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Student.Add(student);
+                _context.Students.Add(student);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -66,7 +66,7 @@ namespace MessyLabAdmin.Controllers
                 return HttpNotFound();
             }
 
-            Student student = _context.Student.Single(m => m.ID == id);
+            Student student = _context.Students.Single(m => m.ID == id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -97,7 +97,7 @@ namespace MessyLabAdmin.Controllers
                 return HttpNotFound();
             }
 
-            Student student = _context.Student.Single(m => m.ID == id);
+            Student student = _context.Students.Single(m => m.ID == id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -111,8 +111,8 @@ namespace MessyLabAdmin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            Student student = _context.Student.Single(m => m.ID == id);
-            _context.Student.Remove(student);
+            Student student = _context.Students.Single(m => m.ID == id);
+            _context.Students.Remove(student);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }

@@ -89,7 +89,6 @@ namespace MessyLabAdmin.Controllers
         //
         // GET: /Account/Register
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
@@ -98,7 +97,6 @@ namespace MessyLabAdmin.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {

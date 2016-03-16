@@ -17,9 +17,9 @@ namespace MessyLabAdmin.Models
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
-        public DbSet<Student> Student { get; set; }
-        public DbSet<Assignment> Assignment { get; set; }
-        public DbSet<Solution> Solution { get; set; }
-        public DbSet<Action> Action { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Assignment> Assignments { get; set; }
+        public DbSet<Solution> Solutions { get; set; }
+        public DbSet<Action> Actions { get; set; }
     }
 }
