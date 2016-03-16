@@ -30,9 +30,15 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a asp-controller="Students" asp-action="Index">Studenti</a></li>
-                        <li><a asp-controller="Home" asp-action="Index">Zadaci</a></li>
-                        <li><a asp-controller="Home" asp-action="Index">Akcije</a></li>
+                        <li class="@(ViewData["ActiveNav"] != null && ViewData["ActiveNav"].ToString() == "Students" ? "active" : "")">
+                            <a asp-controller="Students" asp-action="Index">Studenti</a>
+                        </li>
+                        <li class="@(ViewData["ActiveNav"] != null && ViewData["ActiveNav"].ToString() == "Assignments" ? "active" : "")">
+                            <a asp-controller="Home" asp-action="Index">Zadaci</a>
+                        </li>
+                        <li class="@(ViewData["ActiveNav"] != null && ViewData["ActiveNav"].ToString() == "Actions" ? "active" : "")">
+                            <a asp-controller="Home" asp-action="Index">Akcije</a>
+                        </li>
                     </ul>
                     @await Html.PartialAsync("_LoginPartial")
                 </div>

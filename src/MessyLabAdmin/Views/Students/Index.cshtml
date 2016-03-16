@@ -1,61 +1,80 @@
 @model IEnumerable<MessyLabAdmin.Models.Student>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Studenti";
+    ViewData["ActiveNav"] = "Students";
 }
 
-<h2>Index</h2>
+<h2>Studenti</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<div class="row tools-bar">
+    <div class="btn-group col-md-6">
+        <a asp-action="Create" class="btn">
+            Kreiraj studenta <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </a>
+        <a asp-action="Create" class="btn">
+            Učitaj studente (.CSV) <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div class="btn-group col-md-6">
+        <a href="#" class="btn search-link">
+            Pretraga studenata <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+        </a>
+    </div>
+</div>
+
+<table class="table center table-striped">
     <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.EnrollmentNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EnrollmentYear)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FullName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LastName)
-        </th>
+        <th>ID</th>
+        <th>Student</th>
+        <th>Broj indeksa</th>
+        <th>Upisan</th>
+        <th>Aktivan</th>
+        <th>Rešeni zadaci</th>
+        <th>Akcije</th>
         <th></th>
     </tr>
     
 @foreach (var item in Model) {
     <tr>
+        <td>@item.ID</td>
         <td>
-            @Html.DisplayFor(modelItem => item.EnrollmentNumber)
+            @Html.DisplayFor(modelItem => item.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StudentID)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.EnrollmentYear)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.FirstName)
+            @if (item.IsActive)
+            {
+                <span class="label label-success">Aktivan</span>
+            }
+            else
+            {
+                <span class="label label-default">Neaktivan</span>
+            }
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.FullName)
+            2/3 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.IsActive)
+            <a href="#">
+                253 <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+            </a>
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastName)
-        </td>
-        <td>
-            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+        <td style="width: 20%;">
+            <div class="btn-group">
+                <a asp-action="Details" asp-route-id="@item.ID" class="btn-sm">
+                    Detalji <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                </a>
+                <a asp-action="Edit" asp-route-id="@item.ID" class="btn-sm">
+                    Izmeni <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </a>
+            </div>
         </td>
     </tr>
 }

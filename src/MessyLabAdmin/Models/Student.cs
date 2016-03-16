@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using Microsoft.AspNet.Mvc;
 
 namespace MessyLabAdmin.Models
 {
@@ -22,7 +24,7 @@ namespace MessyLabAdmin.Models
         public int EnrollmentYear { get; set; }
 
         [Display(Name = "Enrollment number")]
-        [Range(0, 2000, ErrorMessage = "Number should be in range 1950-2050")]
+        [Range(1, 2000, ErrorMessage = "Number should be in range 1-2000")]
         public int EnrollmentNumber { get; set; }
 
         [Display(Name = "Active")]
@@ -35,6 +37,16 @@ namespace MessyLabAdmin.Models
             get
             {
                 return FirstName + " " + LastName;
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Student ID")]
+        public string StudentID
+        {
+            get
+            {
+                return EnrollmentYear + "/" + EnrollmentNumber;
             }
         }
 

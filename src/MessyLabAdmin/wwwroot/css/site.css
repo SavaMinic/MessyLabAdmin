@@ -33,7 +33,12 @@ textarea {
     }
 }
 
-footer
-{
-    text-align: center;
-}
+footer { text-align: center; }
+
+li.active { font-weight: bold; }
+
+table.center, table.center th { text-align: center; }
+
+.tools-bar { margin-bottom: 20px; }
+
+.btn.search-link { float: right; }
