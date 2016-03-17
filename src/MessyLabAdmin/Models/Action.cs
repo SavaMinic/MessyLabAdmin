@@ -9,6 +9,7 @@ namespace MessyLabAdmin.Models
 
         public enum ActionType
         {
+            Login = 1,
             Compile,
             StartDebug,
             EndDebug,

@@ -21,5 +21,6 @@ namespace MessyLabAdmin.Models
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<Solution> Solutions { get; set; }
         public DbSet<Action> Actions { get; set; }
+        public DbSet<StudentAssignment> StudentAssignments { get; set; }
     }
 }

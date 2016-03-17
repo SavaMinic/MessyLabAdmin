@@ -18,7 +18,11 @@ namespace MessyLabAdmin.Controllers
         // GET: Students
         public IActionResult Index()
         {
-            return View(_context.Students.ToList());
+            return View(_context.Students
+                .Include(u => u.StudentAssignments)
+                .Include(u => u.Actions)
+                .Include(u => u.Solutions)
+                .ToList());
         }
 
         // GET: Students/Details/5
@@ -29,7 +33,11 @@ namespace MessyLabAdmin.Controllers
                 return HttpNotFound();
             }
 
-            Student student = _context.Students.Single(m => m.ID == id);
+            Student student = _context.Students
+                .Include(u => u.StudentAssignments)
+                .Include(u => u.Actions)
+                .Include(u => u.Solutions)
+                .Single(m => m.ID == id);
             if (student == null)
             {
                 return HttpNotFound();

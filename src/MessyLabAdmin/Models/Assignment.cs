@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MessyLabAdmin.Models
@@ -31,8 +32,9 @@ namespace MessyLabAdmin.Models
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy t}", ApplyFormatInEditMode = true)]
         public DateTime CreatedTime { get; set; }
 
-        public int ApplicationUserID { get; set; }
         [Display(Name = "Created by")]
         public virtual ApplicationUser CreatedBy { get; set; }
+
+        public virtual ICollection<StudentAssignment> StudentAssignments { get; set; }
     }
 }

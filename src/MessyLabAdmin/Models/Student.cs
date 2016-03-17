@@ -42,7 +42,7 @@ namespace MessyLabAdmin.Models
 
         [NotMapped]
         [Display(Name = "Student ID")]
-        public string StudentID
+        public string StudentIdentification
         {
             get
             {
@@ -50,7 +50,7 @@ namespace MessyLabAdmin.Models
             }
         }
 
-        public virtual ICollection<Assignment> Assignements { get; set; }
+        public virtual ICollection<StudentAssignment> StudentAssignments { get; set; }
 
         public virtual ICollection<Solution> Solutions { get; set; }
 
