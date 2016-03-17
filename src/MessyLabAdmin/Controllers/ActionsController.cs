@@ -17,29 +17,25 @@ namespace MessyLabAdmin.Controllers
         }
 
         // GET: Actions
-        public IActionResult Index(int? page)
+        public IActionResult Index(int? page, int? studentId, int? actionType)
         {
-            var actions = _context.Actions.Include(a => a.Student);
+            IQueryable<Action> actions = _context.Actions.Include(a => a.Student);
+
+            if (studentId != null)
+            {
+                actions = actions.Where(a => a.StudentID == studentId);
+                ViewData["filteredStudent"] = _context.Students.SingleOrDefault(s => s.ID == studentId);
+            }
+            if (actionType != null)
+            {
+                actions = actions.Where(a => (int)a.Type == actionType);
+                ViewData["filteredAction"] = (Action.ActionType)actionType;
+            }
 
             ViewData["currentPage"] = page ?? 1;
             ViewData["totalPages"] = actions.Count() / 10 + 1;
 
             return View(actions.ToPagedList(page ?? 1, 10));
-        }
-
-        // POST: Actions/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Action action)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Actions.Add(action);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewData["StudentID"] = new SelectList(_context.Students, "ID", "Student", action.StudentID);
-            return RedirectToAction("Index");
         }
 
     }

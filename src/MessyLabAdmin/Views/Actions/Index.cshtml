@@ -5,7 +5,22 @@
     ViewData["ActiveNav"] = "Actions";
 }
 
-<h2>Sve akcije studenata</h2>
+<h2>
+    Sve
+    @if (ViewData["filteredAction"] != null)
+    {
+        <span class="label label-default">@ViewData["filteredAction"]</span>
+    }
+    akcije
+    @if (ViewData["filteredStudent"] != null)
+    {
+        <span style="font-weight: bold">@(((Student)ViewData["filteredStudent"]).FullName)</span>
+    }
+    else
+    {
+        <span>studenata</span>
+    }
+</h2>
 <div class="row tools-bar">
     <div class="btn-group col-md-6 col-md-offset-6">
         <a href="#" class="btn search-link">
