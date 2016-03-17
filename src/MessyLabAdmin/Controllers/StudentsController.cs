@@ -34,9 +34,10 @@ namespace MessyLabAdmin.Controllers
             }
 
             Student student = _context.Students
-                .Include(u => u.StudentAssignments)
                 .Include(u => u.Actions)
                 .Include(u => u.Solutions)
+                .Include(u => u.StudentAssignments)
+                .ThenInclude(sa => sa.Assignment)
                 .Single(m => m.ID == id);
             if (student == null)
             {

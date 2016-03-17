@@ -1,67 +1,131 @@
 @model MessyLabAdmin.Models.Student
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalji o studentu";
     ViewData["ActiveNav"] = "Students";
 }
 
 <div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <h2>Detalji o studentu</h2>
-        <div>
-            <a asp-action="Edit" asp-route-id="@Model.ID">Izmeni podatke <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-        </div>
+    <div class="col-md-12">
         <div>
             <hr />
-            <dl class="dl-horizontal">
-                <dt>
-                    Ime
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.FirstName)
-                </dd>
-                <dt>
-                    Prezime
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.LastName)
-                </dd>
-                <dt>
-                    Broj indeksa
-                </dt>
-                <dd>
-                    @Model.StudentIdentification
-                </dd>
-                <dt>
-                    Godina upisa
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.EnrollmentYear)
-                </dd>
-                <dt>
-                    Aktivan
-                </dt>
-                <dd>
-                    @if (Model.IsActive)
-                    {
-                        <span class="label label-success">Aktivan</span>
-                    }
-                    else
-                    {
-                        <span class="label label-default">Neaktivan</span>
-                    }
-                </dd>
-                <dt>Akcije</dt>
-                <dd>
-                    <a href="#">
-                        @Model.Actions.Count <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
-                    </a>
-                </dd>
-                <dt>Zadaci</dt>
-                <dd>
-                    @Model.Solutions.Count / @Model.StudentAssignments.Count <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-                </dd>
-            </dl>
+            <div class="row">
+                <div class="col-md-4">
+                    <h2 class="column-header">
+                        Informacije
+                        <a asp-action="Edit" asp-route-id="@Model.ID" class="tiny-link">Izmeni <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                    </h2>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Ime
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.FirstName)
+                        </dd>
+                        <dt>
+                            Prezime
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.LastName)
+                        </dd>
+                        <dt>
+                            Broj indeksa
+                        </dt>
+                        <dd>
+                            @Model.StudentIdentification
+                        </dd>
+                        <dt>
+                            Godina upisa
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.EnrollmentYear)
+                        </dd>
+                        <dt>
+                            Aktivan
+                        </dt>
+                        <dd>
+                            @if (Model.IsActive)
+                            {
+                                <span class="label label-success">Aktivan</span>
+                            }
+                            else
+                            {
+                                <span class="label label-default">Neaktivan</span>
+                            }
+                        </dd>
+                        <dt>Akcije</dt>
+                        <dd>
+                            <a href="#">
+                                @Model.Actions.Count <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+                            </a>
+                        </dd>
+                        <dt>Zadaci</dt>
+                        <dd>
+                            @Model.Solutions.Count / @Model.StudentAssignments.Count <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="col-md-8">
+                    <h2 class="column-header">Zadaci</h2>
+                    <table class="table center table-striped">
+                        <tr>
+                            <th>Naslov</th>
+                            <th>Početak</th>
+                            <th>Kraj</th>
+                            <th>Status</th>
+                            <th>Rešenje</th>
+                        </tr>
+                        @foreach (var item in Model.StudentAssignments)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="#">
+                                        @item.Assignment.Title
+                                        <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                                    </a>
+                                </td>
+                                <td>@item.Assignment.StartTime.ToString("dd-MM-yyyy")</td>
+                                <td>@item.Assignment.EndTime.ToString("dd-MM-yyyy")</td>
+                                <td>
+                                    @if (item.Assignment.IsActive)
+                                    {
+                                        if (item.Assignment.StartTime > DateTime.Now)
+                                        {
+                                            <span class="label label-default">Nije započet</span>
+                                        }
+                                        else if (item.Assignment.EndTime < DateTime.Now)
+                                        {
+                                            <span class="label label-default">Istekao</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-primary">Aktivan</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="label label-warning">Neaktivan</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Student.Solutions.Any(s => s.AssignmentID == item.AssignmentID && s.StudentID == item.StudentID))
+                                    {
+                                        
+                                        <a href="#">
+                                            <span class="label label-success">Poslato</span>
+                                            <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="label label-danger">Nije poslato</span>
+                                    }
+                                </td>
+                            </tr>
+                         }
+                        </table>
+                </div>
+            </div>
         </div>
         <p>
             <a asp-action="Index" class="btn btn-default">Nazad na listu</a>

@@ -42,3 +42,7 @@ table.center, table.center th { text-align: center; }
 .tools-bar { margin-bottom: 20px; }
 
 .btn.search-link { float: right; }
+
+h2.column-header { margin-top: 0; }
+
+.tiny-link { font-size: 14px; vertical-align: middle; margin-left: 20px;}
