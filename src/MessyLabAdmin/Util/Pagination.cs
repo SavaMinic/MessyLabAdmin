@@ -10,7 +10,7 @@ namespace MessyLabAdmin.Util
     public static class Pagination
     {
 
-        public static IEnumerable<T> ToPagedList<T>(this IEnumerable<T> list, int page, int countPerPage)
+        public static IQueryable<T> ToPagedList<T>(this IQueryable<T> list, int page, int countPerPage)
         {
             return list.Skip((page-1)*countPerPage).Take(countPerPage);
         }

@@ -19,7 +19,7 @@ namespace MessyLabAdmin.Controllers
         // GET: Students
         public IActionResult Index(int? page)
         {
-            var students = _context.Students
+            IQueryable<Student> students = _context.Students
                 .Include(u => u.StudentAssignments)
                 .Include(u => u.Actions);
 
