@@ -14,7 +14,7 @@ namespace MessyLabAdmin.Models
 
         [DataType(DataType.DateTime)]
         [Display(Name = "Created at")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy t}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime CreatedTime { get; set; }
         
         public int StudentID { get; set; }

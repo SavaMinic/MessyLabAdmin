@@ -25,6 +25,7 @@ namespace MessyLabAdmin.Controllers
 
             ViewData["currentPage"] = page ?? 1;
             ViewData["totalPages"] = students.Count() / 10  + 1;
+
             return View(students.ToPagedList(page ?? 1, 10));
         }
 

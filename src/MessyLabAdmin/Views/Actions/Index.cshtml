@@ -1,0 +1,51 @@
+@model IEnumerable<MessyLabAdmin.Models.Action>
+
+@{
+    ViewData["Title"] = "Akcije studenata";
+    ViewData["ActiveNav"] = "Actions";
+}
+
+<h2>Sve akcije studenata</h2>
+<div class="row tools-bar">
+    <div class="btn-group col-md-6 col-md-offset-6">
+        <a href="#" class="btn search-link">
+            Pretraga akcija <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+        </a>
+    </div>
+</div>
+
+<table class="table center table-striped">
+    <tr>
+        <th>ID</th>
+        <th>Student</th>
+        <th>Vreme</th>
+        <th>Tip akcije</th>
+        <th style="width: 50%;">Podaci</th>
+    </tr>
+    
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ID)
+        </td>
+        <td>
+            <a asp-controller="Students" asp-action="Details" asp-route-id="@item.StudentID">
+                @Html.DisplayFor(modelItem => item.Student.FullName)
+            </a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedTime)
+        </td>
+        <td>
+            <span class="label label-default">
+                @Html.DisplayFor(modelItem => item.Type)
+            </span>
+        </td>
+        <td>
+            @(!string.IsNullOrEmpty(item.Data) ? item.Data : "/")
+        </td>
+    </tr>
+}
+</table>
+
+@Html.Partial("_Pagination", new PaginationViewData((int)ViewData["currentPage"], (int)ViewData["totalPages"]))

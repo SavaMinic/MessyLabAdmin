@@ -37,7 +37,7 @@
                             <a asp-controller="Home" asp-action="Index">Zadaci</a>
                         </li>
                         <li class="@(ViewData["ActiveNav"] != null && ViewData["ActiveNav"].ToString() == "Actions" ? "active" : "")">
-                            <a asp-controller="Home" asp-action="Index">Akcije</a>
+                            <a asp-controller="Actions" asp-action="Index">Akcije</a>
                         </li>
                     </ul>
                     @await Html.PartialAsync("_LoginPartial")

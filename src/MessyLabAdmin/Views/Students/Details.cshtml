@@ -85,8 +85,8 @@
                                         <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                                     </a>
                                 </td>
-                                <td>@item.Assignment.StartTime.ToString("dd-MM-yyyy")</td>
-                                <td>@item.Assignment.EndTime.ToString("dd-MM-yyyy")</td>
+                                <td>@item.Assignment.StartTime.ToString("dd.MM.yyyy")</td>
+                                <td>@item.Assignment.EndTime.ToString("dd.MM.yyyy")</td>
                                 <td>
                                     @if (item.Assignment.IsActive)
                                     {
@@ -135,8 +135,5 @@
                 </div>
             </div>
         </div>
-        <p>
-            <a asp-action="Index" class="btn btn-default">Nazad na listu</a>
-        </p>
     </div>
 </div>
