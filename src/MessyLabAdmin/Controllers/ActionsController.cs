@@ -4,6 +4,7 @@ using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
 using MessyLabAdmin.Models;
 using MessyLabAdmin.Util;
+using System.Collections.Generic;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -24,18 +25,29 @@ namespace MessyLabAdmin.Controllers
             if (studentId != null)
             {
                 actions = actions.Where(a => a.StudentID == studentId);
-                ViewData["filteredStudent"] = _context.Students.SingleOrDefault(s => s.ID == studentId);
+                ViewBag.filteredStudent = _context.Students.SingleOrDefault(s => s.ID == studentId);
             }
             if (actionType != null)
             {
                 actions = actions.Where(a => (int)a.Type == actionType);
-                ViewData["filteredAction"] = (Action.ActionType)actionType;
+                ViewBag.filteredAction = actionType;
             }
-
-            ViewData["currentPage"] = page ?? 1;
-            ViewData["totalPages"] = actions.Count() / 10 + 1;
+            
+            ViewBag.currentPage = page ?? 1;
+            ViewBag.totalPages = actions.Count() / 10 + 1;
+            ViewBag.allActionTypes = GetAllActionTypes();
 
             return View(actions.ToPagedList(page ?? 1, 10));
+        }
+
+        private IEnumerable<SelectListItem> GetAllActionTypes()
+        {
+            var ret = new List<SelectListItem>();
+            foreach (var item in System.Enum.GetValues(typeof(Action.ActionType)).Cast<Action.ActionType>())
+            {
+                ret.Add(new SelectListItem() { Value = ((int)item).ToString(), Text = item.ToString()});
+            }
+            return ret;
         }
 
     }

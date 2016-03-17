@@ -7,25 +7,40 @@
 
 <h2>
     Sve
-    @if (ViewData["filteredAction"] != null)
+    @if (ViewBag.filteredAction != null)
     {
-        <span class="label label-default">@ViewData["filteredAction"]</span>
+        <span class="label label-default">@((MessyLabAdmin.Models.Action.ActionType)ViewBag.filteredAction)</span>
     }
     akcije
-    @if (ViewData["filteredStudent"] != null)
+    @if (ViewBag.filteredStudent != null)
     {
-        <span style="font-weight: bold">@(((Student)ViewData["filteredStudent"]).FullName)</span>
+        <span style="font-weight: bold">@ViewBag.filteredStudent.FullName</span>
     }
     else
     {
         <span>studenata</span>
     }
 </h2>
+
 <div class="row tools-bar">
-    <div class="btn-group col-md-6 col-md-offset-6">
-        <a href="#" class="btn search-link">
-            Pretraga akcija <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+    <div class="btn-group col-md-10 col-md-offset-2">
+        <a href="#" class="btn search-link" id="search-cancel" style="display:none">
+            Otkaži
         </a>
+        <a href="#" class="btn search-link" id="search-toggle">
+            <label>Pretraga akcija</label> <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+        </a>
+        <div id="search-bar" class="form-group pull-right" style="display:none">
+            <form asp-action="Index" method="get" asp-antiforgery="false">
+                @if (ViewBag.filteredStudent != null)
+                {
+                    <input type="hidden" name="studentId" value="@ViewBag.filteredStudent.ID" />
+                }
+                <select name="actionType" class="form-control" asp-for="@ViewData["filteredAction"]" asp-items="@ViewBag.allActionTypes">
+                    <option value="" style="font-style:italic">Izaberite vrstu akcije</option>
+                </select>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -63,4 +78,31 @@
 }
 </table>
 
-@Html.Partial("_Pagination", new PaginationViewData((int)ViewData["currentPage"], (int)ViewData["totalPages"]))
+@Html.Partial("_Pagination", new PaginationViewData(ViewBag.currentPage, ViewBag.totalPages))
+
+@section scripts
+{
+
+<script type="text/javascript">
+    $(function () {
+
+        $("#search-toggle").click(function () {
+            if ($("#search-bar").is(":visible")) {
+                $("#search-bar form").submit();
+            } else {
+                $(this).find("label").text("Pretraži");
+                $("#search-bar, #search-cancel").fadeIn("fast");
+            }
+            return false;
+        })
+
+        $("#search-cancel").click(function() {
+            $("#search-bar").add(this).fadeOut("fast", function () {
+                $("#search-toggle label").text("Pretraga akcija");
+            });
+            return false;
+        });
+    });
+</script>
+
+}

@@ -23,8 +23,8 @@ namespace MessyLabAdmin.Controllers
                 .Include(u => u.StudentAssignments)
                 .Include(u => u.Actions);
 
-            ViewData["currentPage"] = page ?? 1;
-            ViewData["totalPages"] = students.Count() / 10  + 1;
+            ViewBag.currentPage = page ?? 1;
+            ViewBag.totalPages = students.Count() / 10 + 1;
 
             return View(students.ToPagedList(page ?? 1, 10));
         }
