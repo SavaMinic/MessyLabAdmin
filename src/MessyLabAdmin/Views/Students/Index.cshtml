@@ -1,4 +1,5 @@
 @model IEnumerable<MessyLabAdmin.Models.Student>
+@using MessyLabAdmin.Util
 
 @{
     ViewData["Title"] = "Studenti";
@@ -79,3 +80,4 @@
     </tr>
 }
 </table>
+@Html.Partial("_Pagination", new PaginationViewData((int)ViewData["currentPage"], (int)ViewData["totalPages"]))

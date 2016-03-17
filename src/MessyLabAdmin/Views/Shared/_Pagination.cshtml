@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNet.Mvc
+@using MessyLabAdmin.Util
+@model  MessyLabAdmin.Util.PaginationViewData
+
+<nav>
+    Stranica @Model.CurrentPage / @Model.TotalPages
+    <ul class="pagination pull-right">
+        @if (Model.PreviousPage != null)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new { page = Model.PreviousPage})" aria-label="Prethodna">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Prethodna</span>
+                </a>
+            </li>
+        }
+
+        @for (int i = Model.StartPage; i <= Model.EndPage; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i})">
+                @i
+                </a>
+            </li>
+        }
+
+        @if (Model.NextPage != null)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new { page = Model.NextPage })" aria-label="Sledeća">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Sledeća</span>
+                </a>
+            </li>
+        }
+
+    </ul>
+    <div class="clearfix"></div>
+</nav>

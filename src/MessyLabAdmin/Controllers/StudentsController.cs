@@ -3,6 +3,7 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
 using MessyLabAdmin.Models;
+using MessyLabAdmin.Util;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -16,12 +17,15 @@ namespace MessyLabAdmin.Controllers
         }
 
         // GET: Students
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
-            return View(_context.Students
+            var students = _context.Students
                 .Include(u => u.StudentAssignments)
-                .Include(u => u.Actions)
-                .ToList());
+                .Include(u => u.Actions);
+
+            ViewData["currentPage"] = page ?? 1;
+            ViewData["totalPages"] = students.Count() / 10  + 1;
+            return View(students.ToPagedList(page ?? 1, 10));
         }
 
         // GET: Students/Details/5
