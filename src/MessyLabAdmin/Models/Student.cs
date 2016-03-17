@@ -52,8 +52,6 @@ namespace MessyLabAdmin.Models
 
         public virtual ICollection<StudentAssignment> StudentAssignments { get; set; }
 
-        public virtual ICollection<Solution> Solutions { get; set; }
-
         public virtual ICollection<Action> Actions { get; set; }
     }
 }

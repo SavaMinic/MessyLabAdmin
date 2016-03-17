@@ -21,7 +21,6 @@ namespace MessyLabAdmin.Controllers
             return View(_context.Students
                 .Include(u => u.StudentAssignments)
                 .Include(u => u.Actions)
-                .Include(u => u.Solutions)
                 .ToList());
         }
 
@@ -35,9 +34,11 @@ namespace MessyLabAdmin.Controllers
 
             Student student = _context.Students
                 .Include(u => u.Actions)
-                .Include(u => u.Solutions)
-                .Include(u => u.StudentAssignments)
-                .ThenInclude(sa => sa.Assignment)
+                // need to manually initialize many-to-many link
+                    .Include(u => u.StudentAssignments)
+                        .ThenInclude(sa => sa.Assignment)
+                    .Include(u => u.StudentAssignments)
+                        .ThenInclude(sa => sa.Solution)
                 .Single(m => m.ID == id);
             if (student == null)
             {

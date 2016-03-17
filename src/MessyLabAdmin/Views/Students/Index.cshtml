@@ -59,7 +59,7 @@
             }
         </td>
         <td>
-            @item.Solutions.Count / @item.StudentAssignments.Count <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+            @item.StudentAssignments.Count(sa => sa.SolutionID != null) / @item.StudentAssignments.Count <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
         </td>
         <td>
             <a href="#">
