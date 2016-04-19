@@ -7,12 +7,18 @@
 
         <environment names="Development">
             <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+            <link rel="stylesheet" href="~/lib/jquery-ui/themes/smoothness/jquery-ui.min.css" />
+            <link rel="stylesheet" href="~/lib/jquery-ui/themes/smoothness/theme.css" />
+            <link rel="stylesheet" href="~/lib/jqueryui-timepicker-addon/src/jquery-ui-timepicker-addon.css" />
             <link rel="stylesheet" href="~/css/site.css" />
         </environment>
         <environment names="Staging,Production">
             <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
                   asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
                   asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link rel="stylesheet" href="~/lib/jquery-ui/themes/smoothness/jquery-ui.min.css" />
+            <link rel="stylesheet" href="~/lib/jquery-ui/themes/smoothness/theme.css" />
+            <link rel="stylesheet" href="~/lib/jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.css" />
             <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
         </environment>
     </head>
@@ -55,6 +61,8 @@
         <environment names="Development">
             <script src="~/lib/jquery/dist/jquery.js"></script>
             <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+            <script src="~/lib/jquery-ui/jquery-ui.js"></script>
+            <script src="~/lib/jqueryui-timepicker-addon/src/jquery-ui-timepicker-addon.js"></script>
             <script src="~/js/site.js" asp-append-version="true"></script>
         </environment>
         <environment names="Staging,Production">
@@ -66,6 +74,11 @@
                     asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                     asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
             </script>
+            <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/jquery-ui.min.js"
+                    asp-fallback-src="~/lib/jquery-ui/jquery-ui.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+            </script>
+            <script src="~/lib/jqueryui-timepicker-addon/src/jquery-ui-timepicker-addon.js" asp-append-version="true"></script>
             <script src="~/js/site.min.js" asp-append-version="true"></script>
         </environment>
 
