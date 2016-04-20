@@ -61,7 +61,7 @@
         <th>Student</th>
         <th>Vreme</th>
         <th>Tip akcije</th>
-        <th style="width: 50%;">Podaci</th>
+        <th></th>
     </tr>
     
 @foreach (var item in Model) {
@@ -83,7 +83,16 @@
             </span>
         </td>
         <td>
-            @(!string.IsNullOrEmpty(item.Data) ? item.Data : "/")
+            <button class="btn btn-xs toggle-data" data-text-active="Prikaži podatke" data-text-inactive="Sakrij podatke" style="@(string.IsNullOrEmpty(item.Data) ? "display:none" : "")">
+                Prikaži podatke
+            </button>
+        </td>
+       </tr>
+       <tr class="action-data" style="display:none">
+        <td colspan="5">
+            <div>
+                @(!string.IsNullOrEmpty(item.Data) ? item.Data : "/")
+            </div>
         </td>
     </tr>
 }
@@ -120,6 +129,15 @@
             currentText: "Trenutno vreme",
             closeText: "OK"
         });
+
+        $(".toggle-data").click(function (ev) {
+            var btn = $(this);
+            var div = btn.parents("tr").next("tr.action-data");
+            var isActive = div.is(":visible");
+            div.fadeToggle("fast");
+            btn.text(btn.data(isActive ? "text-active" : "text-inactive"));
+            btn.toggleClass("btn-info");
+        })
     });
 </script>
 
