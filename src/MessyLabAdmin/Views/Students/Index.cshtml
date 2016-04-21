@@ -8,7 +8,7 @@
 <h2>Studenti</h2>
 
 <div class="row tools-bar">
-    <div class="btn-group col-md-6">
+    <div class="btn-group col-md-4">
         <a asp-action="Create" class="btn">
             Kreiraj studenta <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </a>
@@ -17,20 +17,53 @@
         </a>
     </div>
 
-    <div class="btn-group col-md-6">
-        <a href="#" class="btn search-link">
+    <div class="btn-group col-md-8">
+        <a href="#" class="btn search-link" id="search-cancel" style="display:none">
+            Otkaži
+        </a>
+        <a href="#" class="btn search-link" id="search-toggle">
             Pretraga studenata <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
         </a>
+    </div>
+</div>
+<div class="row tools-bar">
+    <div class="btn-group col-md-12">
+        <div id="search-bar" class="form-group pull-right" style="display:none">
+            <form asp-action="Index" method="get" asp-antiforgery="false" class="form-inline">
+                <div class="form-group input-group-sm">
+                    <label for="firstName">Ime:</label>
+                    <input id="firstName" name="firstName" type="text" value="@ViewBag.firstName" class="form-control input-sm" />
+                </div>
+                <div class="form-group input-group-sm">
+                    <label for="lastName">Prezime:</label>
+                    <input id="lastName" name="lastName" type="text" value="@ViewBag.lastName" class="form-control input-sm" />
+                </div>
+                <div class="form-group input-group-xs">
+                    <label for="enrollmentYear">Upisan:</label>
+                    <input id="enrollmentYear" name="enrollmentYear" type="text" value="@ViewBag.enrollmentYear" class="form-control input-xs" />
+                </div>
+                <div class="form-group input-group-xs">
+                    <label for="enrollmentNumber">Broj:</label>
+                    <input id="enrollmentNumber" name="enrollmentNumber" type="text" value="@ViewBag.enrollmentNumber" class="form-control input-xs" />
+                </div>
+                <div class="form-group input-group-sm">
+                    <label for="isActive">Status:</label>
+                    <select name="isActive" class="form-control" asp-for="@ViewData["isActive"]" asp-items="@ViewBag.statusData">
+                        <option value="" style="font-style:italic">/</option>
+                    </select>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <table class="table center table-striped">
     <tr>
         <th>ID</th>
-        <th>Student</th>
+        <th>Ime i prezime</th>
         <th>Broj indeksa</th>
         <th>Upisan</th>
-        <th>Aktivan</th>
+        <th>Status</th>
         <th>Rešeni zadaci</th>
         <th>Akcije</th>
         <th></th>
@@ -81,3 +114,30 @@
 </table>
 
 @Html.Partial("_Pagination", new PaginationViewData(ViewBag.currentPage, ViewBag.totalPages))
+
+@section scripts
+{
+
+    <script type="text/javascript">
+    $(function () {
+
+        $("#search-toggle").click(function () {
+            if ($("#search-bar").is(":visible")) {
+                $("#search-bar form").submit();
+            } else {
+                $(this).find("label").text("Pretraži");
+                $("#search-bar, #search-cancel").fadeIn("fast");
+            }
+            return false;
+        })
+
+        $("#search-cancel").click(function() {
+            $("#search-bar").add(this).fadeOut("fast", function () {
+                $("#search-toggle label").text("Pretraga studenata");
+            });
+            return false;
+        });
+    });
+    </script>
+
+}

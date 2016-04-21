@@ -47,3 +47,13 @@ h2.column-header { margin-top: 0; }
 
 .tiny-link { font-size: 14px; vertical-align: middle; margin-left: 20px;}
 .pagination { margin: 0; }
+
+.input-xs {
+}
+
+.input-group-xs>.form-control,
+.input-group-xs>.input-group-addon,
+.input-group-xs>.input-group-btn>.btn {
+    
+    width: 80px;
+}

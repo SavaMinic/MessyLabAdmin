@@ -4,6 +4,7 @@ using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
 using MessyLabAdmin.Models;
 using MessyLabAdmin.Util;
+using System.Collections.Generic;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -17,14 +18,45 @@ namespace MessyLabAdmin.Controllers
         }
 
         // GET: Students
-        public IActionResult Index(int? page)
+        public IActionResult Index(int? page, string firstName, string lastName, int? enrollmentYear, int? enrollmentNumber, int? isActive)
         {
             IQueryable<Student> students = _context.Students
                 .Include(u => u.StudentAssignments)
                 .Include(u => u.Actions);
 
+            if (firstName != null && firstName != "")
+            {
+                students = students.Where(s => s.FirstName.Contains(firstName));
+                ViewBag.firstName = firstName;
+            }
+            if (lastName != null && lastName != "")
+            {
+                students = students.Where(s => s.LastName.Contains(lastName));
+                ViewBag.lastName = lastName;
+            }
+            if (enrollmentYear != null)
+            {
+                students = students.Where(s => s.EnrollmentYear == enrollmentYear);
+                ViewBag.enrollmentYear = enrollmentYear;
+            }
+            if (enrollmentNumber != null)
+            {
+                students = students.Where(s => s.EnrollmentNumber == enrollmentNumber);
+                ViewBag.enrollmentNumber = enrollmentNumber;
+            }
+            if (isActive != null)
+            {
+                students = students.Where(s => s.IsActive == (isActive == 1));
+                ViewBag.isActive = isActive;
+            }
+
             ViewBag.currentPage = page ?? 1;
             ViewBag.totalPages = students.Count() / 10 + 1;
+            ViewBag.statusData = new List<SelectListItem>()
+            {
+                new SelectListItem() { Value = "0", Text = "Neaktivan" },
+                new SelectListItem() { Value = "1", Text = "Aktivan" },
+            };
 
             return View(students.ToPagedList(page ?? 1, 10));
         }
