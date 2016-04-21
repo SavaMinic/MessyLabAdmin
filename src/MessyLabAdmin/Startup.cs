@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MessyLabAdmin.Models;
 using MessyLabAdmin.Services;
+using MessyLabAdmin.Models.ModelBinder;
+using Microsoft.AspNet.Mvc;
 
 namespace MessyLabAdmin
 {
@@ -49,6 +51,9 @@ namespace MessyLabAdmin
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+
+            // add into first place so it's always executed
+            services.Configure<MvcOptions>(options => options.ModelBinders.Insert(0, new DateTimeModelBinder()));
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();

@@ -1,0 +1,93 @@
+@model IEnumerable<MessyLabAdmin.Models.Assignment>
+
+@{
+    ViewData["Title"] = "Svi zadaci";
+    ViewData["ActiveNav"] = "Assignments";
+}
+
+<h2>Zadaci</h2>
+
+<div class="row tools-bar">
+    <div class="btn-group col-md-10">
+        <a asp-action="Create" class="btn">
+            Kreiraj zadatak <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div class="btn-group col-md-2">
+        <a href="#" class="btn search-link" id="search-cancel" style="display:none">
+            Otkaži
+        </a>
+        <a href="#" class="btn search-link" id="search-toggle">
+            Pretraga zadataka <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+        </a>
+    </div>
+</div>
+<table class="table center table-striped">
+    <tr>
+        <th>ID</th>
+        <th>Zadatak</th>
+        <th>Broj studenata</th>
+        <th>Rešeno</th>
+        <th>Postavio</th>
+        <th>Početak</th>
+        <th>Kraj</th>
+        <th>Status</th>
+        <th style="width: 20%;"></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudentAssignments.Count)
+            </td>
+            <td>
+                @item.StudentAssignments.Where(sa => sa.SolutionID != null).Count()
+            </td>
+            <td>
+                @item.CreatedBy<br />
+                @Html.DisplayFor(modelItem => item.CreatedTime)
+            </td>
+            <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
+            <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
+            <td>
+                @if (item.IsActive)
+                {
+                    if (item.StartTime > DateTime.Now)
+                    {
+                        <span class="label label-default">Nije započet</span>
+                    }
+                    else if (item.EndTime < DateTime.Now)
+                    {
+                        <span class="label label-default">Istekao</span>
+                    }
+                    else
+                    {
+                        <span class="label label-primary">Aktivan</span>
+                    }
+                }
+                else
+                {
+                    <span class="label label-warning">Neaktivan</span>
+                }
+            </td>
+            <td>
+                <div class="btn-group">
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn-sm">
+                        Detalji <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn-sm">
+                        Izmeni <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    }
+</table>

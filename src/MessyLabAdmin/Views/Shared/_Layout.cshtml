@@ -40,7 +40,7 @@
                             <a asp-controller="Students" asp-action="Index">Studenti</a>
                         </li>
                         <li class="@(ViewData["ActiveNav"] != null && ViewData["ActiveNav"].ToString() == "Assignments" ? "active" : "")">
-                            <a asp-controller="Home" asp-action="Index">Zadaci</a>
+                            <a asp-controller="Assignments" asp-action="Index">Zadaci</a>
                         </li>
                         <li class="@(ViewData["ActiveNav"] != null && ViewData["ActiveNav"].ToString() == "Actions" ? "active" : "")">
                             <a asp-controller="Actions" asp-action="Index">Akcije</a>

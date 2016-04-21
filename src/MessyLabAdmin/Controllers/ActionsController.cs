@@ -21,11 +21,9 @@ namespace MessyLabAdmin.Controllers
         }
 
         // GET: Actions
-        public IActionResult Index(int? page, int? studentId, int? actionType, string createdFrom, string createdUntil)
+        public IActionResult Index(int? page, int? studentId, int? actionType, DateTime? createdFrom, DateTime? createdUntil)
         {
             IQueryable<Action> actions = _context.Actions.Include(a => a.Student);
-            CultureInfo enUS = new CultureInfo("en-US");
-            const string format = "dd.MM.yyyy HH:mm:ss";
 
             if (studentId != null)
             {
@@ -37,16 +35,14 @@ namespace MessyLabAdmin.Controllers
                 actions = actions.Where(a => (int)a.Type == actionType);
                 ViewBag.filteredAction = actionType;
             }
-            DateTime from;
-            if (createdFrom != null && createdFrom != "" && DateTime.TryParseExact(createdFrom, format, enUS, DateTimeStyles.None, out from))
+            if (createdFrom != null)
             {
-                actions = actions.Where(a => a.CreatedTime >= from);
+                actions = actions.Where(a => a.CreatedTime >= createdFrom);
                 ViewBag.createdFrom = createdFrom;
             }
-            DateTime until;
-            if (createdUntil != null && createdUntil != "" && DateTime.TryParseExact(createdUntil, format, enUS, DateTimeStyles.None, out until))
+            if (createdUntil != null)
             {
-                actions = actions.Where(a => a.CreatedTime <= until);
+                actions = actions.Where(a => a.CreatedTime <= createdUntil);
                 ViewBag.createdUntil = createdUntil;
             }
             

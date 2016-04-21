@@ -8,7 +8,7 @@
 <h2>Studenti</h2>
 
 <div class="row tools-bar">
-    <div class="btn-group col-md-4">
+    <div class="btn-group col-md-8">
         <a asp-action="Create" class="btn">
             Kreiraj studenta <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </a>
@@ -17,7 +17,7 @@
         </a>
     </div>
 
-    <div class="btn-group col-md-8">
+    <div class="btn-group col-md-4">
         <a href="#" class="btn search-link" id="search-cancel" style="display:none">
             Otkaži
         </a>
@@ -70,7 +70,7 @@
         <th>Status</th>
         <th>Rešeni zadaci</th>
         <th>Akcije</th>
-        <th></th>
+        <th style="width: 20%;"></th>
     </tr>
     
 @foreach (var item in Model) {
@@ -103,7 +103,7 @@
                 @item.Actions.Count <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
             </a>
         </td>
-        <td style="width: 20%;">
+        <td>
             <div class="btn-group">
                 <a asp-action="Details" asp-route-id="@item.ID" class="btn-sm">
                     Detalji <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>

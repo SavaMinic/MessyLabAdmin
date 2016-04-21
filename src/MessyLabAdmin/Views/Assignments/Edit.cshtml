@@ -1,0 +1,76 @@
+@model MessyLabAdmin.Models.Assignment
+
+@{
+    ViewData["Title"] = "Izmeni zadatak";
+    ViewData["ActiveNav"] = "Assignments";
+}
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-4">
+        <h2>Izmena zadatka</h2>
+        <form asp-action="Edit">
+            <div class="form-horizontal">
+                <hr />
+                <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ID" />
+                <div class="form-group">
+                    <label asp-for="Title" class="col-md-2 control-label">Naslov</label>
+                    <div class="col-md-10">
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="col-md-2 control-label">Opis</label>
+                    <div class="col-md-10">
+                        <textarea asp-for="Description" class="form-control" rows="8"></textarea>
+                        <span asp-validation-for="Description" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StartTime" class="col-md-2 control-label">Početak</label>
+                    <div class="col-md-10">
+                        <input asp-for="StartTime" class="form-control" />
+                        <span asp-validation-for="StartTime" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EndTime" class="col-md-2 control-label">Kraj</label>
+                    <div class="col-md-10">
+                        <input asp-for="EndTime" class="form-control" />
+                        <span asp-validation-for="EndTime" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                            <input asp-for="IsActive" />
+                            <label asp-for="IsActive">Aktivan zadatak</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Sačuvaj" class="btn btn-primary" />
+                        <a class="btn btn-default" asp-action="Index">Nazad na listu</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(function () {
+            $("#StartTime, #EndTime").datetimepicker({
+                dateFormat: "dd.mm.yy",
+                timeFormat: "HH:mm:ss",
+                currentText: "Trenutno vreme",
+                closeText: "OK"
+            });
+        });
+    </script>
+
+}
