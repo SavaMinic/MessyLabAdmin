@@ -18,7 +18,7 @@ namespace MessyLabAdmin.Controllers
         }
 
         // GET: Students
-        public IActionResult Index(int? page, string firstName, string lastName, int? enrollmentYear, int? enrollmentNumber, int? isActive)
+        public IActionResult Index(int? page, string firstName, string lastName, int? enrollmentYear, int? enrollmentNumber, int? isActive, int? solutionCount)
         {
             IQueryable<Student> students = _context.Students
                 .Include(u => u.StudentAssignments)
@@ -48,6 +48,13 @@ namespace MessyLabAdmin.Controllers
             {
                 students = students.Where(s => s.IsActive == (isActive == 1));
                 ViewBag.isActive = isActive;
+            }
+            if (solutionCount != null)
+            {
+                students = students.Where(s => 
+                    s.StudentAssignments.Where(sa => sa.Solution != null).Count() == solutionCount
+                );
+                ViewBag.solutionCount = solutionCount;
             }
 
             ViewBag.currentPage = page ?? 1;
