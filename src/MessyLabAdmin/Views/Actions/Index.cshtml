@@ -38,11 +38,11 @@
                 }
                 <div class="form-group input-group-sm">
                     <label for="createdFrom">Od:</label>
-                    <input id="createdFrom" name="createdFrom" type="text" value="@ViewBag.createdFrom.ToString("dd.MM.yyyy HH:mm:ss")" class="form-control input-sm" />
+                    <input id="createdFrom" name="createdFrom" type="text" value="@(ViewBag.createdFrom != null ? ViewBag.createdFrom.ToString("dd.MM.yyyy HH:mm:ss") : "")" class="form-control input-sm" />
                 </div>
                 <div class="form-group input-group-sm">
                     <label for="createdUntil">Do:</label>
-                    <input id="createdUntil" name="createdUntil" type="text" value="@ViewBag.createdUntil.ToString("dd.MM.yyyy HH:mm:ss")" class="form-control input-sm" />
+                    <input id="createdUntil" name="createdUntil" type="text" value="@(ViewBag.createdUntil != null ? ViewBag.createdUntil.ToString("dd.MM.yyyy HH:mm:ss") : "")" class="form-control input-sm" />
                 </div>
                 <div class="form-group">
                     <label for="actionType">Akcija:</label>
