@@ -7,6 +7,7 @@ using MessyLabAdmin.Util;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using System;
+using System.Collections.Generic;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -67,6 +68,20 @@ namespace MessyLabAdmin.Controllers
                 assignment.CreatedBy = _context.Users.Single(u => u.Id == User.GetUserId());
 
                 _context.Assignments.Add(assignment);
+                _context.SaveChanges();
+
+                // create Student assignments
+                var students = SelectStudents(assignment.SelectEnrollmentNumberDiv, assignment.SelectEnrollmentYear, assignment.SelectStatus);
+                foreach(Student s in students)
+                {
+                    var sa = new StudentAssignment()
+                    {
+                        StudentID = s.ID,
+                        AssignmentID = assignment.ID,
+                    };
+                    _context.StudentAssignments.Add(sa);
+                }
+
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -138,6 +153,32 @@ namespace MessyLabAdmin.Controllers
             _context.Assignments.Remove(assignment);
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult StudentsCount(int? EnrollmentNumberDiv, int? EnrollmentYear, int? Status)
+        {
+            var students = SelectStudents(EnrollmentNumberDiv, EnrollmentYear, Status);
+            return Ok(students.Count());
+        }
+
+        private IQueryable<Student> SelectStudents(int? EnrollmentNumberDiv, int? EnrollmentYear, int? Status)
+        {
+            IQueryable<Student> students = _context.Students;
+            if (EnrollmentNumberDiv != null && EnrollmentNumberDiv != 0)
+            {
+                students = students.Where(s => s.EnrollmentNumber % EnrollmentNumberDiv == 0);
+            }
+            if (EnrollmentYear != null)
+            {
+                students = students.Where(s => s.EnrollmentYear == EnrollmentYear);
+            }
+            if (Status != null && Status != 0)
+            {
+                bool shouldBeActive = Status == 1;
+                students = students.Where(s => s.IsActive == shouldBeActive);
+            }
+            return students;
         }
     }
 }

@@ -9,6 +9,8 @@ namespace MessyLabAdmin.Models
 {
     public class StudentAssignment
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         public int StudentID { get; set; }

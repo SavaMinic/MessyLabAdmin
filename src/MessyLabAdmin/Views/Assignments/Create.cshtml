@@ -4,71 +4,147 @@
     ViewData["Title"] = "Kreiraj novi zadatak";
     ViewData["ActiveNav"] = "Assignments";
 }
-
-<h2>Create</h2>
-
-<form asp-action="Create">
-    <div class="form-horizontal">
-        <h4>Assignment</h4>
-        <hr />
-        <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="CreatedTime" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="CreatedTime" class="form-control" />
-                <span asp-validation-for="CreatedTime" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Description" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="EndTime" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="EndTime" class="form-control" />
-                <span asp-validation-for="EndTime" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <div class="checkbox">
-                    <input asp-for="IsActive" />
-                    <label asp-for="IsActive"></label>
+<div class="row">
+    <div class="col-md-5 col-md-offset-1">
+        <h2>Kreiraj novi zadatak</h2>
+        <form asp-action="Create" id="CreateForm">
+            <div class="form-horizontal">
+                <hr />
+                <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Title" class="col-md-2 control-label">Naslov</label>
+                    <div class="col-md-10">
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="col-md-2 control-label">Opis</label>
+                    <div class="col-md-10">
+                        <textarea asp-for="Description" class="form-control" rows="8"></textarea>
+                        <span asp-validation-for="Description" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StartTime" class="col-md-2 control-label">Početak</label>
+                    <div class="col-md-4">
+                        <input asp-for="StartTime" class="form-control" />
+                        <span asp-validation-for="StartTime" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EndTime" class="col-md-2 control-label">Kraj</label>
+                    <div class="col-md-4">
+                        <input asp-for="EndTime" class="form-control" />
+                        <span asp-validation-for="EndTime" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                            <input asp-for="IsActive" />
+                            <label asp-for="IsActive">Aktivan zadatak</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Kreiraj" class="btn btn-primary" />
+                        <a class="btn btn-default" asp-action="Index">Nazad na listu</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="StartTime" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="StartTime" class="form-control" />
-                <span asp-validation-for="StartTime" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Title" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
+            <input type="hidden" asp-for="SelectEnrollmentNumberDiv" />
+            <input type="hidden" asp-for="SelectEnrollmentYear" />
+            <input type="hidden" asp-for="SelectStatus" />
+        </form>
     </div>
-</form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="col-md-6">
+        <h2>Izabrani studenti:</h2>
+        <form id="SelectStudentsForm" asp-action="StudentsCount" method="get">
+            <div class="form-horizontal">
+                <hr />
+                <div class="form-group">
+                    <label for="StudentCount" class="col-md-6 control-label" style="font-size: 24px;">Broj studenata</label>
+                    <div class="col-md-6">
+                        <div name="StudentCount" id="StudentCount" style="font-size: 36px;">?</div>
+                    </div>
+                </div>
+                <h3>Parametri:</h3>
+                <div class="form-group">
+                    <label for="EnrollmentNumberDiv" class="col-md-4 control-label">Broj indeksa deljiv sa</label>
+                    <div class="col-md-3">
+                        <input id="EnrollmentNumberDiv" name="EnrollmentNumberDiv" class="form-control" type="number" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="EnrollmentYear" class="col-md-4 control-label">Godina upisa</label>
+                    <div class="col-md-3">
+                        <input id="EnrollmentYear" name="EnrollmentYear" class="form-control" type="number" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="State" class="col-md-3 control-label">Status</label>
+                    <div class="col-md-8">
+                        <label class="radio-inline">
+                            <input type="radio" name="Status" value="0" checked>
+                            <span class="label label-primary">Nebitno</span>
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="Status" value="1">
+                            <span class="label label-success">Aktivan</span>
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="Status" value="-1">
+                            <span class="label label-default">Neaktivan</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
-@section Scripts {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+@section scripts {
+
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            $("#StartTime, #EndTime").datetimepicker({
+                dateFormat: "dd.mm.yy",
+                timeFormat: "HH:mm:ss",
+                currentText: "Trenutno vreme",
+                closeText: "OK"
+            });
+
+
+            function RefreshStudentsCount() {
+                $("#StudentCount").text("?");
+
+                var form = $("#SelectStudentsForm");
+                $.ajax({
+                    url: form.prop("action"),
+                    method: "get", cache: false,
+                    data: form.serialize(),
+                    success: function (data) {
+                        $("#StudentCount").text(data);
+                    }
+                });
+
+                // refresh hidden fields
+                $("#SelectEnrollmentNumberDiv").val($("#EnrollmentNumberDiv").val());
+                $("#SelectEnrollmentYear").val($("#EnrollmentYear").val());
+                $("#SelectStatus").val($("input[name=Status]:checked").val());
+            }
+
+            $("#EnrollmentNumberDiv, #EnrollmentYear").keyup(RefreshStudentsCount);
+            $("input[name=Status]").change(RefreshStudentsCount);
+            RefreshStudentsCount();
+
+        });
+    </script>
+
 }
