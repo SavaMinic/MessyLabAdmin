@@ -58,3 +58,7 @@ h2.column-header { margin-top: 0; }
 }
 
 #ui-datepicker-div { z-index: 1500 !important; }
+
+.text-center { text-align: center; }
+
+input[type=checkbox].form-control { box-shadow: none; -webkit-box-shadow: none; }

@@ -68,7 +68,7 @@
                 <div class="form-group">
                     <label for="StudentCount" class="col-md-6 control-label" style="font-size: 24px;">Broj studenata</label>
                     <div class="col-md-6">
-                        <div name="StudentCount" id="StudentCount" style="font-size: 36px;">?</div>
+                        <div name="StudentCount" id="StudentCount" style="font-size: 36px;">@ViewBag.StudentCount</div>
                     </div>
                 </div>
                 <h3>Parametri:</h3>
@@ -142,7 +142,6 @@
 
             $("#EnrollmentNumberDiv, #EnrollmentYear").keyup(RefreshStudentsCount);
             $("input[name=Status]").change(RefreshStudentsCount);
-            RefreshStudentsCount();
 
         });
     </script>

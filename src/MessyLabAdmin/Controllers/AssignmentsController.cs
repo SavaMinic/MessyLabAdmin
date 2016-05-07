@@ -54,6 +54,7 @@ namespace MessyLabAdmin.Controllers
         // GET: Assignments/Create
         public IActionResult Create()
         {
+            ViewBag.StudentCount = SelectStudents().Count();
             return View();
         }
 
@@ -74,15 +75,14 @@ namespace MessyLabAdmin.Controllers
                 var students = SelectStudents(assignment.SelectEnrollmentNumberDiv, assignment.SelectEnrollmentYear, assignment.SelectStatus);
                 foreach(Student s in students)
                 {
-                    var sa = new StudentAssignment()
+                    _context.StudentAssignments.Add(new StudentAssignment()
                     {
                         StudentID = s.ID,
                         AssignmentID = assignment.ID,
-                    };
-                    _context.StudentAssignments.Add(sa);
+                    });
                 }
-
                 _context.SaveChanges();
+
                 return RedirectToAction("Index");
             }
             return View(assignment);
@@ -96,11 +96,14 @@ namespace MessyLabAdmin.Controllers
                 return HttpNotFound();
             }
 
-            Assignment assignment = _context.Assignments.Single(m => m.ID == id);
+            Assignment assignment = _context.Assignments.Include(a => a.StudentAssignments).Single(m => m.ID == id);
             if (assignment == null)
             {
                 return HttpNotFound();
             }
+            ViewBag.StudentAssignmentsCount = assignment.StudentAssignments.Count;
+            ViewBag.SolvedStudentAssignmentsCount = assignment.StudentAssignments.Where(sa => sa.SolutionID != null).Count();
+            ViewBag.StudentCount = SelectStudents(assignment.SelectEnrollmentNumberDiv, assignment.SelectEnrollmentYear, assignment.SelectStatus).Count();
             return View(assignment);
         }
 
@@ -115,12 +118,36 @@ namespace MessyLabAdmin.Controllers
                 // so we load them from disk
                 var old = _context.Assignments.AsNoTracking()
                     .Include(a => a.CreatedBy)
+                    .Include(a => a.StudentAssignments)
                     .Single(a => a.ID == assignment.ID);
                 assignment.CreatedTime = old.CreatedTime;
                 assignment.CreatedBy = old.CreatedBy;
 
                 _context.Update(assignment);
                 _context.SaveChanges();
+
+                // delete old student assignments, without solution
+                var oldStudentAssignments = _context.StudentAssignments.Where(sa => sa.AssignmentID == assignment.ID && sa.SolutionID == null);
+                _context.StudentAssignments.RemoveRange(oldStudentAssignments);
+                _context.SaveChanges();
+
+                // create Student assignments (for those who don't exist)
+                var students = SelectStudents(assignment.SelectEnrollmentNumberDiv, assignment.SelectEnrollmentYear, assignment.SelectStatus);
+                students = students.Include(s => s.StudentAssignments);
+                foreach (Student s in students)
+                {
+                    var existAssignement = _context.StudentAssignments.Any(sa => sa.StudentID == s.ID && sa.AssignmentID == assignment.ID);
+                    if (!existAssignement)
+                    {
+                        _context.StudentAssignments.Add(new StudentAssignment()
+                        {
+                            StudentID = s.ID,
+                            AssignmentID = assignment.ID,
+                        });
+                    }
+                }
+                _context.SaveChanges();
+
                 return RedirectToAction("Index");
             }
             return View(assignment);
@@ -162,7 +189,7 @@ namespace MessyLabAdmin.Controllers
             return Ok(students.Count());
         }
 
-        private IQueryable<Student> SelectStudents(int? EnrollmentNumberDiv, int? EnrollmentYear, int? Status)
+        private IQueryable<Student> SelectStudents(int? EnrollmentNumberDiv = null, int? EnrollmentYear = null, int? Status = null)
         {
             IQueryable<Student> students = _context.Students;
             if (EnrollmentNumberDiv != null && EnrollmentNumberDiv != 0)

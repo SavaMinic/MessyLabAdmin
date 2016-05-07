@@ -96,7 +96,9 @@
             }
         </td>
         <td>
-            @item.StudentAssignments.Count(sa => sa.SolutionID != null) / @item.StudentAssignments.Count <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+            <a asp-action="Details" asp-route-id="@item.ID" class="btn-sm">
+                @item.StudentAssignments.Count(sa => sa.SolutionID != null) / @item.StudentAssignments.Count <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+            </a>
         </td>
         <td>
             <a href="@Url.Action("Index", "Actions", new { studentId = item.ID })">
