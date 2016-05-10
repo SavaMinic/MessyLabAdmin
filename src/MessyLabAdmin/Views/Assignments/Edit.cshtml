@@ -185,7 +185,7 @@
             // initialize selection form
             $("#EnrollmentNumberDiv").val($("#SelectEnrollmentNumberDiv").val());
             $("#EnrollmentYear").val($("#SelectEnrollmentYear").val());
-            var status = $("#SelectStatus").val();
+            var status = $("#SelectStatus").val() || "0";
             $("input[name=Status][value=" + status + "]").prop("checked", "checked");
 
             $("#ChangesWarning").change(function() {

@@ -5,51 +5,153 @@
     ViewData["ActiveNav"] = "Assignments";
 }
 
-<h2>Details</h2>
+<div class="row">
+    <div class="col-md-12">
+        <div>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="column-header">
+                        Zadatak
+                        <a asp-action="Edit" asp-route-id="@Model.ID" class="tiny-link">Izmeni <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                    </h2>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Naslov
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Title)
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Opis
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Description)
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Početak
+                        </dt>
+                        <dd>
+                            @Model.StartTime.ToString("dd.MM.yyyy")
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Kraj
+                        </dt>
+                        <dd>
+                            @Model.EndTime.ToString("dd.MM.yyyy")
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Status
+                        </dt>
+                        <dd>
+                            @if (Model.IsActive)
+                            {
+                                if (Model.StartTime > DateTime.Now)
+                                {
+                                    <span class="label label-default">Nije započet</span>
+                                }
+                                else if (Model.EndTime < DateTime.Now)
+                                {
+                                    <span class="label label-default">Istekao</span>
+                                }
+                                else
+                                {
+                                    <span class="label label-primary">Aktivan</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="label label-warning">Neaktivan</span>
+                            }
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Postavio
+                        </dt>
+                        <dd>
+                            @Model.CreatedBy<br />
+                            @Html.DisplayFor(model => model.CreatedTime)
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Rešeno
+                        </dt>
+                        <dd>
+                            @Model.StudentAssignments.Where(sa => sa.SolutionID != null).Count()
+                            /
+                            @Html.DisplayFor(model => model.StudentAssignments.Count)
+                        </dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <h2 class="column-header">Dodeljeno studentima</h2>
+                    <table class="table center table-striped">
+                        <tr>
+                            <th>ID</th>
+                            <th>Ime</th>
+                            <th>Broj indeksa</th>
+                            <th>Upisan</th>
+                            <th>Status</th>
+                            <th>Rešenje</th>
+                        </tr>
+                        @foreach (var item in ViewBag.studentAssignments)
+                        {
+                            <tr>
+                                <td>@item.StudentID</td>
+                                <td>
+                                    <a asp-controller="Students" asp-action="Details" asp-route-id="@item.StudentID" class="btn-sm">
+                                        @item.Student.FullName
+                                    </a>
+                                </td>
+                                <td>@item.Student.StudentIdentification</td>
+                                <td>@item.Student.EnrollmentYear</td>
+                                <td>
+                                    @if (item.Student.IsActive)
+                                    {
+                                        <span class="label label-success">Aktivan</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="label label-default">Neaktivan</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Solution != null)
+                                    {
 
-<div>
-    <h4>Assignment</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedTime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedTime)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EndTime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EndTime)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.StartTime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.StartTime)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-    </dl>
+                                        <a asp-controller="Solution" asp-action="Details" asp-route-id="@item.SolutionID" class="btn-sm">
+                                            <span class="label label-success">Poslato</span>
+                                            @if (item.Solution.IsEvaluated)
+                                            {
+                                                <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>
+                                            }
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="label label-danger">Nije poslato</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    @Html.Partial("_Pagination", new PaginationViewData(ViewBag.currentPage, ViewBag.totalPages))
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</p>

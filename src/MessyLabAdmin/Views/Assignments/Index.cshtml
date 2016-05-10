@@ -27,12 +27,11 @@
     <tr>
         <th>ID</th>
         <th>Zadatak</th>
-        <th>Broj studenata</th>
-        <th>Rešeno</th>
         <th>Postavio</th>
         <th>Početak</th>
         <th>Kraj</th>
         <th>Status</th>
+        <th>Rešeno</th>
         <th style="width: 20%;"></th>
     </tr>
 
@@ -44,12 +43,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StudentAssignments.Count)
-            </td>
-            <td>
-                @item.StudentAssignments.Where(sa => sa.SolutionID != null).Count()
             </td>
             <td>
                 @item.CreatedBy<br />
@@ -77,6 +70,11 @@
                 {
                     <span class="label label-warning">Neaktivan</span>
                 }
+            </td>
+            <td>
+                @item.StudentAssignments.Where(sa => sa.SolutionID != null).Count()
+                /
+                @Html.DisplayFor(modelItem => item.StudentAssignments.Count)
             </td>
             <td>
                 <div class="btn-group">

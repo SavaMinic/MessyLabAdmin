@@ -35,18 +35,31 @@ namespace MessyLabAdmin.Controllers
         }
 
         // GET: Assignments/Details/5
-        public IActionResult Details(int? id)
+        public IActionResult Details(int? id, int? page)
         {
             if (id == null)
             {
                 return HttpNotFound();
             }
 
-            Assignment assignment = _context.Assignments.Single(m => m.ID == id);
+            Assignment assignment = _context.Assignments
+                .Include(a => a.CreatedBy)
+                .Include(a => a.StudentAssignments)
+                .Single(m => m.ID == id);
+
             if (assignment == null)
             {
                 return HttpNotFound();
             }
+
+            IQueryable<StudentAssignment> studentAssignments = _context.StudentAssignments
+                .Include(sa => sa.Solution)
+                .Include(sa => sa.Student)
+                .Where(sa => sa.AssignmentID == id);
+
+            ViewBag.currentPage = page ?? 1;
+            ViewBag.totalPages = studentAssignments.Count() / 10 + 1;
+            ViewBag.studentAssignments =  studentAssignments.ToPagedList(page ?? 1, 10);
 
             return View(assignment);
         }
