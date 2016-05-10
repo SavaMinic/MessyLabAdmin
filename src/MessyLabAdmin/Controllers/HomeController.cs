@@ -8,9 +8,11 @@ using MessyLabAdmin.Util;
 using System.Collections.Generic;
 using System.Globalization;
 using Action = MessyLabAdmin.Models.Action;
+using Microsoft.AspNet.Authorization;
 
 namespace MessyLabAdmin.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private ApplicationDbContext _context;
@@ -19,7 +21,7 @@ namespace MessyLabAdmin.Controllers
         {
             _context = context;
         }
-
+        
         public IActionResult Index()
         {
             ViewBag.latestActions = _context.Actions

@@ -4,9 +4,11 @@ using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
 using MessyLabAdmin.Models;
 using System;
+using Microsoft.AspNet.Authorization;
 
 namespace MessyLabAdmin.Controllers
 {
+    [Authorize]
     public class SolutionsController : Controller
     {
         private ApplicationDbContext _context;

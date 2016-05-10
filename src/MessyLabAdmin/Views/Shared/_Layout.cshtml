@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
@@ -35,6 +36,8 @@
                     <a asp-controller="Home" asp-action="Index" class="navbar-brand">MessyLab Admin</a>
                 </div>
                 <div class="navbar-collapse collapse">
+                    @if (User.IsSignedIn())
+                    {
                     <ul class="nav navbar-nav">
                         <li class="@(ViewData["ActiveNav"] != null && ViewData["ActiveNav"].ToString() == "Students" ? "active" : "")">
                             <a asp-controller="Students" asp-action="Index">Studenti</a>
@@ -46,6 +49,7 @@
                             <a asp-controller="Actions" asp-action="Index">Akcije</a>
                         </li>
                     </ul>
+                    }
                     @await Html.PartialAsync("_LoginPartial")
                 </div>
             </div>

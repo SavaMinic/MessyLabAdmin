@@ -5,9 +5,11 @@ using Microsoft.Data.Entity;
 using MessyLabAdmin.Models;
 using MessyLabAdmin.Util;
 using System.Collections.Generic;
+using Microsoft.AspNet.Authorization;
 
 namespace MessyLabAdmin.Controllers
 {
+    [Authorize]
     public class StudentsController : Controller
     {
         private ApplicationDbContext _context;

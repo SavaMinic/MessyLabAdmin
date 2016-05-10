@@ -8,9 +8,11 @@ using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNet.Authorization;
 
 namespace MessyLabAdmin.Controllers
 {
+    [Authorize]
     public class AssignmentsController : Controller
     {
         private ApplicationDbContext _context;
