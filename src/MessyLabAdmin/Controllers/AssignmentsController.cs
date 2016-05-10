@@ -52,6 +52,7 @@ namespace MessyLabAdmin.Controllers
                 return HttpNotFound();
             }
 
+            // students for this assignment are paged
             IQueryable<StudentAssignment> studentAssignments = _context.StudentAssignments
                 .Include(sa => sa.Solution)
                 .Include(sa => sa.Student)
