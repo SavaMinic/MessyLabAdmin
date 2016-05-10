@@ -112,7 +112,7 @@
                                     @if (item.Solution != null)
                                     {
                                         
-                                        <a href="#">
+                                        <a asp-controller="Solutions" asp-action="Details" asp-route-id="@item.SolutionID">
                                             <span class="label label-success">Poslato</span>
                                             @if (item.Solution.IsEvaluated)
                                             {

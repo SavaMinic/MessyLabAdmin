@@ -22,8 +22,6 @@
                         <dd>
                             @Html.DisplayFor(model => model.Title)
                         </dd>
-                    </dl>
-                    <dl class="dl-horizontal">
                         <dt>
                             Opis
                         </dt>
@@ -38,16 +36,12 @@
                         <dd>
                             @Model.StartTime.ToString("dd.MM.yyyy")
                         </dd>
-                    </dl>
-                    <dl class="dl-horizontal">
                         <dt>
                             Kraj
                         </dt>
                         <dd>
                             @Model.EndTime.ToString("dd.MM.yyyy")
                         </dd>
-                    </dl>
-                    <dl class="dl-horizontal">
                         <dt>
                             Status
                         </dt>
@@ -81,8 +75,6 @@
                             @Model.CreatedBy<br />
                             @Html.DisplayFor(model => model.CreatedTime)
                         </dd>
-                    </dl>
-                    <dl class="dl-horizontal">
                         <dt>
                             Rešeno
                         </dt>
@@ -118,7 +110,7 @@
                                 <td>
                                     @if (item.Student.IsActive)
                                     {
-                                        <span class="label label-success">Aktivan</span>
+                                        <span class="label label-primary">Aktivan</span>
                                     }
                                     else
                                     {
@@ -129,7 +121,7 @@
                                     @if (item.Solution != null)
                                     {
 
-                                        <a asp-controller="Solution" asp-action="Details" asp-route-id="@item.SolutionID" class="btn-sm">
+                                        <a asp-controller="Solutions" asp-action="Details" asp-route-id="@item.SolutionID" class="btn-sm">
                                             <span class="label label-success">Poslato</span>
                                             @if (item.Solution.IsEvaluated)
                                             {

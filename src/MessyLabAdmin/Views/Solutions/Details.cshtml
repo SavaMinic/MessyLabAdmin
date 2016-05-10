@@ -1,0 +1,101 @@
+@model MessyLabAdmin.Models.Solution
+
+@{
+    ViewData["Title"] = "Rešenje zadatka";
+    ViewData["ActiveNav"] = "Assignments";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <h2 class="column-header">
+                        Zadatak
+                    </h2>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Naslov
+                        </dt>
+                        <dd>
+                            <a asp-controller="Assignments" asp-action="Details" asp-route-id="@Model.AssignmentID">
+                                @Html.DisplayFor(model => model.Assignment.Title)
+                            </a>
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Početak
+                        </dt>
+                        <dd>
+                            @Model.Assignment.StartTime.ToString("dd.MM.yyyy HH:mm:ss")
+                        </dd>
+                        <dt>
+                            Kraj
+                        </dt>
+                        <dd>
+                            @Model.Assignment.EndTime.ToString("dd.MM.yyyy HH:mm:ss")
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Student
+                        </dt>
+                        <dd>
+                            <a asp-controller="Students" asp-action="Details" asp-route-id="@Model.StudentID">
+                                @Model.Student.FullName
+                            </a>
+                        </dd>
+                        <dt>
+                            Poslao
+                        </dt>
+                        <dd>
+                            @Model.CreatedTime.ToString("dd.MM.yyyy HH:mm:ss")
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Status
+                        </dt>
+                        <dd>
+                            @if (Model.IsEvaluated)
+                            {
+                                <span class="label label-success">Pregledan</span>
+                            }
+                            else
+                            {
+                                <span class="label label-warning">Nije pregledan</span>
+                            } 
+                            <a asp-action="ToggleEvaluated" asp-route-id="@Model.ID" 
+                               class="btn @(Model.IsEvaluated ? "btn-default" : "btn-primary")">
+                                @(Model.IsEvaluated ? "Otkaži" : "Pregledaj")
+                            </a>
+                        </dd>
+                    </dl>
+</div>
+                <div class="col-md-8">
+                    <h2 class="column-header">
+                        Rešenje
+                    </h2>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Opis
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Assignment.Description)
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Rešenje
+                        </dt>
+                        <dd>
+                            @Model.Code
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
