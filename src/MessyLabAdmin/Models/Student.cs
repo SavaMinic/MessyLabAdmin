@@ -40,6 +40,14 @@ namespace MessyLabAdmin.Models
             }
         }
 
+        [Required]
+        public string Username { get; set; }
+
+        [Required]
+        public string PasswordHash { get; set; }
+
+        public long LastLoginTimestamp { get; set; }
+
         [NotMapped]
         [Display(Name = "Student ID")]
         public string StudentIdentification
@@ -47,6 +55,15 @@ namespace MessyLabAdmin.Models
             get
             {
                 return EnrollmentYear + "/" + EnrollmentNumber;
+            }
+        }
+
+        [NotMapped]
+        public string SessionID
+        {
+            get
+            {
+                return LastLoginTimestamp + "" + ID;
             }
         }
 
