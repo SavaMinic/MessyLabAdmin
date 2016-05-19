@@ -4,15 +4,19 @@
     ViewData["Title"] = "Izmena podataka studenta";
     ViewData["ActiveNav"] = "Students";
 }
-
 <div class="row">
-    <div class="col-md-6 col-md-offset-4">
+    <div class="col-md-8 col-md-offset-2">
         <h2>Izmena podataka studenta</h2>
-        <form asp-action="Edit">
+        <hr />
+    </div>
+</div>
+<div class="row">
+    <form asp-action="Edit">
+        <div class="col-md-5 col-md-offset-2">
             <div class="form-horizontal">
-                <hr />
                 <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="ID" />
+                <input type="hidden" asp-for="PasswordHash" />
                 <div class="form-group">
                     <label asp-for="FirstName" class="col-md-2 control-label">Ime</label>
                     <div class="col-md-10">
@@ -56,12 +60,62 @@
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <h4>Podaci za prijavu</h4>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Username" class="col-md-5 control-label">Korisničko ime</label>
+                    <div class="col-md-6">
+                        <input asp-for="Username" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-8 control-label">Promenjena inicijalna lozinka</label>
+                    <div class="col-md-2">
+                        @if (ViewBag.PasswordChanged)
+                        {
+                            <span class="label label-primary">DA</span>
+                        }
+                        else
+                        {
+                            <span class="label label-warning">NE</span>
+                        }
+                    </div>
+                </div>
+                @if (ViewBag.PasswordChanged)
+                {
+                    <div class="form-group">
+                        <div class="col-md-offset-1 col-md-10">
+                            <a asp-action="ResetPassword" class="btn btn-success" id="resetPassword">Resetuj lozinku na inicijalnu vrednost</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript">
+            $(function () {
+                
+                $("#resetPassword").click(function () {
+                    var url = $(this).prop("href");
+                    $.post(url, { id: $("#ID").val() }, function (data) {
+                        if (data && data.ok)
+                        {
+                            location.reload(true);
+                        }
+                    });
+                    return false;
+                });
+            });
+    </script>
 }

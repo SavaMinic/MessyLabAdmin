@@ -45,6 +45,7 @@ namespace MessyLabAdmin.Models
 
         [Required]
         public string PasswordHash { get; set; }
+        public string InitialPassword { get; set; }
 
         public long LastLoginTimestamp { get; set; }
 

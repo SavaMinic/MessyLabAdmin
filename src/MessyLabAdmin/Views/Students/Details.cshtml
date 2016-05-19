@@ -28,6 +28,8 @@
                         <dd>
                             @Html.DisplayFor(model => model.LastName)
                         </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
                         <dt>
                             Broj indeksa
                         </dt>
@@ -53,6 +55,8 @@
                                 <span class="label label-default">Neaktivan</span>
                             }
                         </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
                         <dt>Akcije</dt>
                         <dd>
                             <a href="@Url.Action("Index", "Actions", new { studentId = Model.ID })">
@@ -63,6 +67,33 @@
                         <dd>
                             @Model.StudentAssignments.Count(sa => sa.SolutionID != null) / @Model.StudentAssignments.Count
                             <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                        </dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Korisničko ime
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Username)
+                        </dd>
+                        <dt>
+                            Inicijalna lozika
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.InitialPassword)
+                        </dd>
+                        <dt>
+                            Promenjena lozinka
+                        </dt>
+                        <dd>
+                            @if (ViewBag.PasswordChanged)
+                            {
+                                <span class="label label-primary">DA</span>
+                            }
+                            else
+                            {
+                                <span class="label label-warning">NE</span>
+                            }
                         </dd>
                     </dl>
                 </div>

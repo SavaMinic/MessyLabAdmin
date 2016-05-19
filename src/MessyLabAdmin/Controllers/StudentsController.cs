@@ -91,6 +91,8 @@ namespace MessyLabAdmin.Controllers
                 return HttpNotFound();
             }
 
+            ViewBag.PasswordChanged = student.PasswordHash != Utility.CalculatePasswordHash(student.Username, student.InitialPassword);
+
             return View(student);
         }
 
@@ -107,6 +109,8 @@ namespace MessyLabAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
+                student.InitialPassword = student.PasswordHash;
+                student.PasswordHash = Utility.CalculatePasswordHash(student.Username, student.PasswordHash);
                 _context.Students.Add(student);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -127,6 +131,9 @@ namespace MessyLabAdmin.Controllers
             {
                 return HttpNotFound();
             }
+
+            ViewBag.PasswordChanged = student.PasswordHash != Utility.CalculatePasswordHash(student.Username, student.InitialPassword);
+
             return View(student);
         }
 
@@ -171,6 +178,22 @@ namespace MessyLabAdmin.Controllers
             _context.Students.Remove(student);
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(int id)
+        {
+            Student student = _context.Students.Single(m => m.ID == id);
+            if (student == null)
+            {
+                return HttpNotFound();
+            }
+
+            student.PasswordHash = Utility.CalculatePasswordHash(student.Username, student.InitialPassword);
+            _context.Students.Update(student);
+            _context.SaveChanges();
+
+            return Ok(new { ok = true });
         }
     }
 }

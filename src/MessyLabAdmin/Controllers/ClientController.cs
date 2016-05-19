@@ -33,7 +33,7 @@ namespace MessyLabAdmin.Controllers
             if (user == null || user == "" || pass == null || pass == "")
                 return HttpNotFound();
 
-            string passwordHash = CalculatePasswordHash(user, pass);
+            string passwordHash = Utility.CalculatePasswordHash(user, pass);
             Student student = _context.Students.SingleOrDefault(s => s.Username == user && s.PasswordHash == passwordHash);
 
             if (student == null)
@@ -76,24 +76,6 @@ namespace MessyLabAdmin.Controllers
             var isOk = _context.SaveChanges() == 1;
 
             return Ok(new { ok = isOk });
-        }
-
-        private string CalculatePasswordHash(string username, string pass)
-        {
-            using (SHA1 sha1Hash = SHA1.Create())
-            {
-                // Convert the input string to a byte array and compute the hash.
-                byte[] data = sha1Hash.ComputeHash(Encoding.UTF8.GetBytes(username + pass));
-
-                // Loop through each byte of the hashed data 
-                // and format each one as a hexadecimal string.
-                StringBuilder sBuilder = new StringBuilder();
-                for (int i = 0; i < data.Length; i++)
-                {
-                    sBuilder.Append(data[i].ToString("x2"));
-                }
-                return sBuilder.ToString();
-            }
         }
     }
 }
