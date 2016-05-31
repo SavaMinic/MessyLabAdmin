@@ -17,6 +17,8 @@ namespace MessyLabAdmin.Models
             RemoveBreakpoint,
             HitBreakpoint,
             SetWatch,
+            CompilationSuccess,
+            CompilationFailure,
         }
 
         public int ID { get; set; }
