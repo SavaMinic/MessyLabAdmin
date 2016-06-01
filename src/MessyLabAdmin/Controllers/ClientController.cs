@@ -19,6 +19,21 @@ namespace MessyLabAdmin.Controllers
     public class ClientController : Controller
     {
 
+        private class AssignmentData
+        {
+            public int ID;
+            public string Title;
+            public string Description;
+            public DateTime StartTime;
+            public DateTime EndTime;
+            public bool CanSendSolution;
+
+            // optional
+            public string SolutionCode;
+            public DateTime SolutionCreated;
+            public bool SolutionEvaluated;
+        }
+
         private ApplicationDbContext _context;
 
         public ClientController(ApplicationDbContext context)
@@ -76,6 +91,96 @@ namespace MessyLabAdmin.Controllers
             var isOk = _context.SaveChanges() == 1;
 
             return Ok(new { ok = isOk });
+        }
+
+        // GET: /Client/Assignments
+        [HttpGet]
+        public IActionResult Assignments(string sessionID)
+        {
+            if (sessionID == null || sessionID == "")
+                return HttpNotFound();
+
+            Student student = _context.Students.SingleOrDefault(s => s.SessionID == sessionID);
+            if (student == null)
+                return HttpNotFound(new { error = -1 });
+
+            var studentAssignments = _context.StudentAssignments
+                .Include(sa => sa.Assignment)
+                .Include(sa => sa.Solution)
+                .Where(sa => sa.StudentID == student.ID
+                    && sa.Assignment.IsActive 
+                    && sa.Assignment.StartTime <= DateTime.Now 
+                    //&& sa.Assignment.EndTime >= DateTime.Now
+                );
+
+            var ret = new List<AssignmentData>();
+            foreach (var studentAssignment in studentAssignments)
+            {
+                var data = new AssignmentData()
+                {
+                    ID = studentAssignment.Assignment.ID,
+                    Title = studentAssignment.Assignment.Title,
+                    Description = studentAssignment.Assignment.Description,
+                    StartTime = studentAssignment.Assignment.StartTime,
+                    EndTime = studentAssignment.Assignment.EndTime,
+                    CanSendSolution = studentAssignment.Assignment.EndTime >= DateTime.Now,
+                };
+                if (studentAssignment.Solution != null)
+                {
+                    data.SolutionCode = studentAssignment.Solution.Code;
+                    data.SolutionCreated = studentAssignment.Solution.CreatedTime;
+                    data.SolutionEvaluated = studentAssignment.Solution.IsEvaluated;
+                }
+                ret.Add(data);
+            }
+            return Ok(new { ok = true, assignments = ret });
+        }
+
+        // POST: /Client/Assignments
+        [HttpPost]
+        public IActionResult Assignments(string sessionID, int assignmentID, string code)
+        {
+            if (sessionID == null || sessionID == "")
+                return HttpNotFound();
+
+            Student student = _context.Students.SingleOrDefault(s => s.SessionID == sessionID);
+            if (student == null)
+                return HttpNotFound(new { error = -1 });
+
+            var studentAssignment = _context.StudentAssignments
+                .Include(sa => sa.Assignment)
+                .Include(sa => sa.Solution)
+                .SingleOrDefault(sa => sa.StudentID == student.ID
+                    && sa.Assignment.IsActive
+                    && sa.Assignment.StartTime <= DateTime.Now
+                    && sa.Assignment.EndTime >= DateTime.Now
+                    && sa.AssignmentID == assignmentID
+                );
+            if (studentAssignment == null)
+                return HttpNotFound(new { error = -2 });
+
+            if (studentAssignment.Solution == null)
+            {
+                var solution = new Solution()
+                {
+                    Code = code,
+                    CreatedTime = DateTime.Now,
+                    Student = student,
+                    Assignment = studentAssignment.Assignment,
+                };
+                _context.Solutions.Add(solution);
+                studentAssignment.Solution = solution;
+                _context.StudentAssignments.Update(studentAssignment);
+            }
+            else
+            {
+                studentAssignment.Solution.Code = code;
+                studentAssignment.Solution.CreatedTime = DateTime.Now;
+                _context.Solutions.Update(studentAssignment.Solution);
+            }
+
+            _context.SaveChanges();
+            return Ok(new { ok = true });
         }
     }
 }
