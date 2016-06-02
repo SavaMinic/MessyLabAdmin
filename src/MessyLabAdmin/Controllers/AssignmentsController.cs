@@ -17,21 +17,72 @@ namespace MessyLabAdmin.Controllers
     {
         private ApplicationDbContext _context;
 
+        public enum AssignmentStatus
+        {
+            Default = 0,
+            Active,
+            Inactive,
+            NotStarted,
+            Expired,
+        };
+
         public AssignmentsController(ApplicationDbContext context)
         {
             _context = context;    
         }
 
         // GET: Assignments
-        public IActionResult Index(int? page)
+        public IActionResult Index(int? page, string filteredTitle, DateTime? createdFrom, DateTime? createdUntil, AssignmentStatus status, string createdById)
         {
             IQueryable<Assignment> assignments = _context.Assignments
                 .Include(a => a.CreatedBy)
                 .Include(a => a.StudentAssignments)
                 .ThenInclude(sa => sa.Student);
 
+            if (filteredTitle != null && filteredTitle != "")
+            {
+                assignments = assignments.Where(a => a.Title.Contains(filteredTitle));
+                ViewBag.filteredTitle = filteredTitle;
+            }
+            if (createdFrom != null)
+            {
+                assignments = assignments.Where(a => a.CreatedTime >= createdFrom);
+                ViewBag.createdFrom = createdFrom;
+            }
+            if (createdUntil != null)
+            {
+                assignments = assignments.Where(a => a.CreatedTime <= createdUntil);
+                ViewBag.createdUntil = createdUntil;
+            }
+            if (createdById != null && createdById != "")
+            {
+                assignments = assignments.Where(a => a.CreatedBy.Id == createdById);
+                ViewBag.createdById = createdById;
+            }
+            if (status != AssignmentStatus.Default)
+            {
+                switch(status)
+                {
+                    case AssignmentStatus.Active:
+                        assignments = assignments.Where(a => a.IsActive && a.StartTime <= DateTime.Now && a.EndTime >= DateTime.Now);
+                        break;
+                    case AssignmentStatus.Inactive:
+                        assignments = assignments.Where(a => !a.IsActive);
+                        break;
+                    case AssignmentStatus.NotStarted:
+                        assignments = assignments.Where(a => a.IsActive && a.StartTime > DateTime.Now);
+                        break;
+                    case AssignmentStatus.Expired:
+                        assignments = assignments.Where(a => a.IsActive && a.EndTime < DateTime.Now);
+                        break;
+                }
+                ViewBag.status = status;
+            }
+
             ViewBag.currentPage = page ?? 1;
             ViewBag.totalPages = assignments.Count() / 10 + 1;
+            ViewBag.allStatusTypes = GetAllStatusType();
+            ViewBag.allCreatedByUsers = GetAllCreatedByUsers();
 
             return View(assignments.ToPagedList(page ?? 1, 10));
         }
@@ -222,6 +273,39 @@ namespace MessyLabAdmin.Controllers
                 students = students.Where(s => s.IsActive == shouldBeActive);
             }
             return students;
+        }
+
+        private string GetStatusTypeTitle(AssignmentStatus status)
+        {
+            switch(status)
+            {
+                case AssignmentStatus.Active: return "Aktivan";
+                case AssignmentStatus.Inactive: return "Neaktivan";
+                case AssignmentStatus.NotStarted: return "Nije započet";
+                case AssignmentStatus.Expired: return "Istekao";
+            }
+            return "Svi";
+        }
+
+        private IEnumerable<SelectListItem> GetAllStatusType()
+        {
+            var ret = new List<SelectListItem>();
+            foreach (var item in System.Enum.GetValues(typeof(AssignmentStatus)).Cast<AssignmentStatus>())
+            {
+                ret.Add(new SelectListItem() { Value = ((int)item).ToString(), Text = GetStatusTypeTitle(item) });
+            }
+            return ret;
+        }
+
+        private IEnumerable<SelectListItem> GetAllCreatedByUsers()
+        {
+            var ret = new List<SelectListItem>();
+            var users = _context.Users.AsEnumerable();
+            foreach (var user in users)
+            {
+                ret.Add(new SelectListItem() { Value = user.Id, Text = user.UserName });
+            }
+            return ret;
         }
     }
 }

@@ -8,19 +8,49 @@
 <h2>Zadaci</h2>
 
 <div class="row tools-bar">
-    <div class="btn-group col-md-10">
+    <div class="btn-group col-md-8">
         <a asp-action="Create" class="btn">
             Kreiraj zadatak <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </a>
     </div>
 
-    <div class="btn-group col-md-2">
+    <div class="btn-group col-md-4">
         <a href="#" class="btn search-link" id="search-cancel" style="display:none">
             Otkaži
         </a>
         <a href="#" class="btn search-link" id="search-toggle">
             Pretraga zadataka <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
         </a>
+    </div>
+</div>
+<div class="row tools-bar">
+    <div class="btn-group col-md-12">
+        <div id="search-bar" class="form-group pull-right" style="display:none">
+            <form asp-action="Index" method="get" asp-antiforgery="false" class="form-inline">
+                <div class="form-group input-group-sm">
+                    <label for="filteredTitle">Naslov:</label>
+                    <input id="filteredTitle" name="filteredTitle" type="text" value="@ViewBag.filteredTitle" class="form-control input-sm" />
+                </div>
+                <div class="form-group input-group-sm">
+                    <label for="createdFrom">Od:</label>
+                    <input id="createdFrom" name="createdFrom" type="text" value="@(ViewBag.createdFrom != null ? ViewBag.createdFrom.ToString("dd.MM.yyyy HH:mm:ss") : "")" class="form-control input-sm" />
+                </div>
+                <div class="form-group input-group-sm">
+                    <label for="createdUntil">Do:</label>
+                    <input id="createdUntil" name="createdUntil" type="text" value="@(ViewBag.createdUntil != null ? ViewBag.createdUntil.ToString("dd.MM.yyyy HH:mm:ss") : "")" class="form-control input-sm" />
+                </div>
+                <div class="form-group">
+                    <label for="actionType">Status:</label>
+                    <select name="status" class="form-control" asp-for="@ViewData["status"]" asp-items="@ViewBag.allStatusTypes"></select>
+                </div>
+                <div class="form-group">
+                    <label for="actionType">Kreirao:</label>
+                    <select name="createdById" class="form-control" asp-for="@ViewData["createdById"]" asp-items="@ViewBag.allCreatedByUsers">
+                        <option value="" style="font-style:italic">Svi</option>
+                    </select>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 <table class="table center table-striped">
@@ -89,3 +119,37 @@
         </tr>
     }
 </table>
+
+@section scripts
+{
+
+    <script type="text/javascript">
+    $(function () {
+
+        $("#search-toggle").click(function () {
+            if ($("#search-bar").is(":visible")) {
+                $("#search-bar form").submit();
+            } else {
+                $(this).find("label").text("Pretraži");
+                $("#search-bar, #search-cancel").fadeIn("fast");
+            }
+            return false;
+        })
+
+        $("#search-cancel").click(function() {
+            $("#search-bar").add(this).fadeOut("fast", function () {
+                $("#search-toggle label").text("Pretraga zadataka");
+            });
+            return false;
+        });
+
+        $("#createdFrom, #createdUntil").datetimepicker({
+            dateFormat: "dd.mm.yy",
+            timeFormat: "HH:mm:ss",
+            currentText: "Trenutno vreme",
+            closeText: "OK"
+        });
+    });
+    </script>
+
+}
