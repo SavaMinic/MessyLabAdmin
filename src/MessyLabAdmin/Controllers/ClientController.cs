@@ -187,13 +187,32 @@ namespace MessyLabAdmin.Controllers
         // just testing
         public IActionResult GetCheckResult(ushort test)
         {
+            Assembler a = new Assembler();
+            //a.LoadFromFile("filename");
+            a.LoadFromString("z = 0\n" +
+                  "a = 1\n" +
+                  "b = 2\n" +
+                  "c = 3\n" +
+                  "d = 4\n" +
+                  "e = 5\n" +
+                  "f = 6\n" +
+                  "g = 7\n" +
+                  "ORG 8\n" +
+                  "MOV a, 666\n" +
+                  "OUT a\n" +
+                  "STOP");
+            if (!a.Process())
+            {
+                return Ok(new { errors = a.Errors });
+            }
+
+            var hex = a.ExportToHex();
+
             ushort[] givenInput = new ushort[] { };
             ushort[] expectedOutput = new ushort[] { test };
 
             VirtualMachine vm = new VirtualMachine(givenInput, expectedOutput);
-            vm.LoadFromLines(new string[] {
-                "0008","0108", "029A", "8101", "F000"
-            });
+            vm.LoadFromLines(hex);
             RuntimeException e = vm.Run();
 
             if (e== null || e is NormalTerminationRuntimeException)
