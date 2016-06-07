@@ -12,6 +12,7 @@ using Microsoft.AspNet.Authorization;
 using System.Security.Cryptography;
 using System.Text;
 using Action = MessyLabAdmin.Models.Action;
+using MessyLab.PicoComputer;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -181,6 +182,25 @@ namespace MessyLabAdmin.Controllers
 
             _context.SaveChanges();
             return Ok(new { ok = true });
+        }
+
+        // just testing
+        public IActionResult GetCheckResult(ushort test)
+        {
+            ushort[] givenInput = new ushort[] { };
+            ushort[] expectedOutput = new ushort[] { test };
+
+            VirtualMachine vm = new VirtualMachine(givenInput, expectedOutput);
+            vm.LoadFromLines(new string[] {
+                "0008","0108", "029A", "8101", "F000"
+            });
+            RuntimeException e = vm.Run();
+
+            if (e== null || e is NormalTerminationRuntimeException)
+            {
+                return Ok(new { ok = true });
+            }
+            return Ok(new { error = e.ToString() });
         }
     }
 }
