@@ -13,6 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Action = MessyLabAdmin.Models.Action;
 using MessyLab.PicoComputer;
+using MessyLabAdmin.Services;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -36,11 +37,15 @@ namespace MessyLabAdmin.Controllers
         }
 
         private ApplicationDbContext _context;
+        private IEmailSender _email;
 
-        public ClientController(ApplicationDbContext context)
+        public ClientController(ApplicationDbContext context, IEmailSender emailSender)
         {
             _context = context;
+            _email = emailSender;
         }
+
+        #region Login
 
         // POST: /Client/Login
         [HttpPost]
@@ -71,6 +76,10 @@ namespace MessyLabAdmin.Controllers
             return Ok(new { sessionID =  loginTime + "" + student.ID });
         }
 
+        #endregion
+
+        #region Actions
+
         // POST: /Client/Action
         [HttpPost]
         public IActionResult Action(string sessionID, Action.ActionType type, string data)
@@ -93,6 +102,10 @@ namespace MessyLabAdmin.Controllers
 
             return Ok(new { ok = isOk });
         }
+
+        #endregion
+
+        #region Assignments 
 
         // GET: /Client/Assignments
         [HttpGet]
@@ -184,6 +197,51 @@ namespace MessyLabAdmin.Controllers
             return Ok(new { ok = true });
         }
 
+        #endregion
+
+        #region Passwords
+
+        // POST: /Client/RequestPasswordReset
+        [HttpPost]
+        public IActionResult RequestPasswordReset(string username)
+        {
+            if (username == null || username == "")
+                return HttpNotFound(new { error = -1 });
+
+            var student = _context.Students.SingleOrDefault(s => s.Username == username);
+            if (student == null)
+                return HttpNotFound(new { error = -2 });
+
+            // if already non-used request exists for last 8h
+            var existingRequest = _context.PasswordResets.SingleOrDefault(
+                r => r.StudentID == student.ID 
+                && !r.IsUsed 
+                && r.CreatedTime.AddHours(8) <= DateTime.Now
+            );
+            if (existingRequest != null)
+                return HttpNotFound(new { error = -3 });
+
+            var requestCode = Utility.CalculatePasswordRequestCode();
+
+            // send email
+            //_email.SendEmailAsync("minic.sava@gmail.com", "Messy Lab password reset", "TESTING");
+
+            // create a password reset request
+            var reset = new PasswordReset();
+            reset.Student = student;
+            reset.CreatedTime = DateTime.Now;
+            reset.RequestCode = requestCode;
+            _context.PasswordResets.Add(reset);
+
+            _context.SaveChanges();
+
+            return Ok(new { ok = true });
+        }
+
+        #endregion
+
+        #region Solutions
+
         // just testing
         public IActionResult GetCheckResult(ushort test)
         {
@@ -221,5 +279,7 @@ namespace MessyLabAdmin.Controllers
             }
             return Ok(new { error = e.ToString() });
         }
+
+        #endregion
     }
 }

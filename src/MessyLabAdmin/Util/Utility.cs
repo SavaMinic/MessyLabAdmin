@@ -27,5 +27,17 @@ namespace MessyLabAdmin.Util
                 return sBuilder.ToString();
             }
         }
+
+        public static string CalculatePasswordRequestCode(int len = 32)
+        {
+            var code = new char[len];
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            for (int i = 0; i < len; i++)
+            {
+                code[i] = chars[random.Next(chars.Length)];
+            }
+            return new string(code);
+        }
     }
 }

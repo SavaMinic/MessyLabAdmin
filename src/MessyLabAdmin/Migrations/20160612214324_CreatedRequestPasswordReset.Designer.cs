@@ -8,9 +8,10 @@ using MessyLabAdmin.Models;
 namespace MessyLabAdmin.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20160612214324_CreatedRequestPasswordReset")]
+    partial class CreatedRequestPasswordReset
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -106,23 +107,6 @@ namespace MessyLabAdmin.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired();
-
-                    b.HasKey("ID");
-                });
-
-            modelBuilder.Entity("MessyLabAdmin.Models.PasswordReset", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedTime");
-
-                    b.Property<bool>("IsUsed");
-
-                    b.Property<string>("RequestCode")
-                        .IsRequired();
-
-                    b.Property<int>("StudentID");
 
                     b.HasKey("ID");
                 });
@@ -284,13 +268,6 @@ namespace MessyLabAdmin.Migrations
                     b.HasOne("MessyLabAdmin.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("CreatedById");
-                });
-
-            modelBuilder.Entity("MessyLabAdmin.Models.PasswordReset", b =>
-                {
-                    b.HasOne("MessyLabAdmin.Models.Student")
-                        .WithMany()
-                        .HasForeignKey("StudentID");
                 });
 
             modelBuilder.Entity("MessyLabAdmin.Models.Solution", b =>
