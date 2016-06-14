@@ -14,6 +14,7 @@ using System.Text;
 using Action = MessyLabAdmin.Models.Action;
 using MessyLab.PicoComputer;
 using MessyLabAdmin.Services;
+using MessyLabAdmin.ViewModels.Client;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -212,12 +213,12 @@ namespace MessyLabAdmin.Controllers
             if (student == null)
                 return HttpNotFound(new { error = -2 });
 
-            // if already non-used request exists for last 8h
-            var existingRequest = _context.PasswordResets.SingleOrDefault(
+            // if already non-used request exists in last 24h
+            var existingRequest = _context.PasswordResets.Where(
                 r => r.StudentID == student.ID 
                 && !r.IsUsed 
-                && r.CreatedTime.AddHours(8) <= DateTime.Now
-            );
+                && r.CreatedTime.AddHours(24) >= DateTime.Now
+            ).OrderByDescending(r => r.CreatedTime).FirstOrDefault();
             if (existingRequest != null)
                 return HttpNotFound(new { error = -3 });
 
@@ -236,6 +237,59 @@ namespace MessyLabAdmin.Controllers
             _context.SaveChanges();
 
             return Ok(new { ok = true });
+        }
+
+        // GET: /Client/PasswordReset
+        [HttpGet]
+        public IActionResult PasswordReset(string code = null)
+        {
+            if (code == null || code == "")
+                return HttpNotFound();
+
+            var resetRequest = _context.PasswordResets.SingleOrDefault(
+                r => r.RequestCode == code
+            );
+            if (resetRequest == null)
+                ViewBag.Error = "Request is not valid!";
+            else if (resetRequest.IsUsed)
+                ViewBag.Error = "Request already used!";
+            else if (resetRequest.CreatedTime.AddHours(24) < DateTime.Now)
+                ViewBag.Error = "Request expires after 24h!";
+
+            return View();
+        }
+
+        // POST: /Client/PasswordReset
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PasswordReset(StudentResetPasswordViewModel reset)
+        {
+            if (ModelState.IsValid)
+            {
+                var resetRequest = _context.PasswordResets.SingleOrDefault(
+                    r => r.RequestCode == reset.Code
+                    && !r.IsUsed
+                    && r.CreatedTime.AddHours(24) >= DateTime.Now
+                );
+                if (resetRequest != null)
+                {
+                    var student = _context.Students.SingleOrDefault(s => s.ID == resetRequest.StudentID);
+                    if (student != null)
+                    {
+                        student.PasswordHash = Utility.CalculatePasswordHash(student.Username, reset.Password);
+                        _context.Update(student);
+
+                        resetRequest.IsUsed = true;
+                        _context.Update(resetRequest);
+
+                        _context.SaveChanges();
+                        ViewBag.Success = true;
+
+                        // TODO: send success email
+                    }
+                }
+            }
+            return View();
         }
 
         #endregion
