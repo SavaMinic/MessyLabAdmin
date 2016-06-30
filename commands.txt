@@ -8,3 +8,5 @@ dnu restore
 Lazy loading is not working, so you need to use .Include() inside controllers when fetching from model
 
 Many-to-many is not working automatically in EF7, just make join table between those 2 entities.
+
+dnvm install latest -r coreclr

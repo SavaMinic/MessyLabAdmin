@@ -55,6 +55,7 @@
                 </div>
             </div>
             <input type="hidden" asp-for="SelectEnrollmentNumberDiv" />
+            <input type="hidden" asp-for="SelectEnrollmentNumberModulo" />
             <input type="hidden" asp-for="SelectEnrollmentYear" />
             <input type="hidden" asp-for="SelectStatus" />
         </form>
@@ -73,17 +74,25 @@
                 </div>
                 <h3>Parametri:</h3>
                 <div class="form-group">
-                    <label for="EnrollmentNumberDiv" class="col-md-4 control-label">Broj indeksa deljiv sa</label>
-                    <div class="col-md-3">
+                    <label for="EnrollmentNumberDiv" class="col-md-4 control-label">Broj indeksa daje ostatak</label>
+                    <div class="col-md-2">
                         <input id="EnrollmentNumberDiv" name="EnrollmentNumberDiv" class="form-control" type="number" />
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="EnrollmentNumberModulo" class="col-md-4 control-label">po modulu</label>
+                    <div class="col-md-2">
+                        <input id="EnrollmentNumberModulo" name="EnrollmentNumberModulo" class="form-control" type="number" />
+                    </div>
+                </div>
+                <hr />
                 <div class="form-group">
                     <label for="EnrollmentYear" class="col-md-4 control-label">Godina upisa</label>
                     <div class="col-md-3">
                         <input id="EnrollmentYear" name="EnrollmentYear" class="form-control" type="number" />
                     </div>
                 </div>
+                <hr />
                 <div class="form-group">
                     <label for="State" class="col-md-3 control-label">Status</label>
                     <div class="col-md-8">
@@ -136,11 +145,12 @@
 
                 // refresh hidden fields
                 $("#SelectEnrollmentNumberDiv").val($("#EnrollmentNumberDiv").val());
+                $("#SelectEnrollmentNumberModulo").val($("#EnrollmentNumberModulo").val());
                 $("#SelectEnrollmentYear").val($("#EnrollmentYear").val());
                 $("#SelectStatus").val($("input[name=Status]:checked").val());
             }
 
-            $("#EnrollmentNumberDiv, #EnrollmentYear").keyup(RefreshStudentsCount);
+            $("#EnrollmentNumberDiv, #EnrollmentNumberModulo, #EnrollmentYear").keyup(RefreshStudentsCount);
             $("input[name=Status]").change(RefreshStudentsCount);
 
         });

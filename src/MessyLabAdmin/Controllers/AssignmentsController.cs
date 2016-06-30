@@ -139,7 +139,7 @@ namespace MessyLabAdmin.Controllers
                 _context.SaveChanges();
 
                 // create Student assignments
-                var students = SelectStudents(assignment.SelectEnrollmentNumberDiv, assignment.SelectEnrollmentYear, assignment.SelectStatus);
+                var students = SelectStudents(assignment);
                 foreach(Student s in students)
                 {
                     _context.StudentAssignments.Add(new StudentAssignment()
@@ -170,7 +170,7 @@ namespace MessyLabAdmin.Controllers
             }
             ViewBag.StudentAssignmentsCount = assignment.StudentAssignments.Count;
             ViewBag.SolvedStudentAssignmentsCount = assignment.StudentAssignments.Where(sa => sa.SolutionID != null).Count();
-            ViewBag.StudentCount = SelectStudents(assignment.SelectEnrollmentNumberDiv, assignment.SelectEnrollmentYear, assignment.SelectStatus).Count();
+            ViewBag.StudentCount = SelectStudents(assignment).Count();
             return View(assignment);
         }
 
@@ -199,7 +199,7 @@ namespace MessyLabAdmin.Controllers
                 _context.SaveChanges();
 
                 // create Student assignments (for those who don't exist)
-                var students = SelectStudents(assignment.SelectEnrollmentNumberDiv, assignment.SelectEnrollmentYear, assignment.SelectStatus);
+                var students = SelectStudents(assignment);
                 students = students.Include(s => s.StudentAssignments);
                 foreach (Student s in students)
                 {
@@ -250,18 +250,28 @@ namespace MessyLabAdmin.Controllers
         }
 
         [HttpGet]
-        public IActionResult StudentsCount(int? EnrollmentNumberDiv, int? EnrollmentYear, int? Status)
+        public IActionResult StudentsCount(int? EnrollmentNumberDiv, int? EnrollmentNumberModulo, int? EnrollmentYear, int? Status)
         {
-            var students = SelectStudents(EnrollmentNumberDiv, EnrollmentYear, Status);
+            var students = SelectStudents(EnrollmentNumberDiv, EnrollmentNumberModulo, EnrollmentYear, Status);
             return Ok(students.Count());
         }
 
-        private IQueryable<Student> SelectStudents(int? EnrollmentNumberDiv = null, int? EnrollmentYear = null, int? Status = null)
+        private IQueryable<Student> SelectStudents(Assignment assignment)
+        {
+            return SelectStudents(
+                assignment.SelectEnrollmentNumberDiv, 
+                assignment.SelectEnrollmentNumberModulo,
+                assignment.SelectEnrollmentYear,
+                assignment.SelectStatus
+            );
+        }
+
+        private IQueryable<Student> SelectStudents(int? EnrollmentNumberDiv = null, int? EnrollmentNumberModulo = null, int? EnrollmentYear = null, int? Status = null)
         {
             IQueryable<Student> students = _context.Students;
-            if (EnrollmentNumberDiv != null && EnrollmentNumberDiv != 0)
+            if (EnrollmentNumberDiv != null && EnrollmentNumberModulo != null && EnrollmentNumberModulo != 0)
             {
-                students = students.Where(s => s.EnrollmentNumber % EnrollmentNumberDiv == 0);
+                students = students.Where(s => s.EnrollmentNumber % EnrollmentNumberModulo == EnrollmentNumberDiv);
             }
             if (EnrollmentYear != null)
             {

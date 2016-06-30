@@ -37,6 +37,7 @@ namespace MessyLabAdmin.Models
 
         // For selecting students
         public int? SelectEnrollmentNumberDiv { get; set; }
+        public int? SelectEnrollmentNumberModulo { get; set; }
         public int? SelectEnrollmentYear { get; set; }
         public int? SelectStatus { get; set; }
 

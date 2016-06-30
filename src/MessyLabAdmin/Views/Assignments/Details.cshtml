@@ -10,7 +10,7 @@
         <div>
             <hr />
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <h2 class="column-header">
                         Zadatak
                         <a asp-action="Edit" asp-route-id="@Model.ID" class="tiny-link">Izmeni <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
@@ -83,9 +83,44 @@
                             /
                             @Html.DisplayFor(model => model.StudentAssignments.Count)
                         </dd>
+                        <dt>Dodeljeno</dt>
+                        <dd>
+                            @if (Model.SelectEnrollmentNumberDiv != null || Model.SelectEnrollmentNumberModulo != null
+                                || Model.SelectEnrollmentYear != null || Model.SelectStatus != null)
+                            {
+                                if (Model.SelectStatus != null)
+                                {
+                                    switch (Model.SelectStatus)
+                                    {
+                                        case -1:
+                                            <span>Neaktivnim studentima</span>
+                                            break;
+                                        case 0:
+                                            <span>Svim studentima</span>
+                                            break;
+                                        case 1:
+                                            <span>Aktivnim studentima</span>
+                                            break;
+                                    }
+                                }
+                                if (Model.SelectEnrollmentYear != null)
+                                {
+                                    <span>upisanim @Model.SelectEnrollmentYear</span>
+                                }
+                                if (Model.SelectEnrollmentNumberDiv != null && Model.SelectEnrollmentNumberModulo != null)
+                                {
+                                    <span>sa indeksom @Model.SelectEnrollmentNumberDiv po modulu @Model.SelectEnrollmentNumberModulo</span>
+                                }
+                                <span>u trenutku kreiranja zadatka</span>
+                            }
+                            else
+                            {
+                                <span>Svim studentima!</span>
+                            }
+                        </dd>
                     </dl>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 col-md-offset-1">
                     <h2 class="column-header">Dodeljeno studentima</h2>
                     <table class="table center table-striped">
                         <tr>
@@ -97,7 +132,7 @@
                             <th>Rešenje</th>
                         </tr>
                         @foreach (var item in ViewBag.studentAssignments)
-                        {
+                                    {
                             <tr>
                                 <td>@item.StudentID</td>
                                 <td>
@@ -111,20 +146,20 @@
                                     @if (item.Student.IsActive)
                                     {
                                         <span class="label label-primary">Aktivan</span>
-                                    }
+                                }
                                     else
                                     {
                                         <span class="label label-default">Neaktivan</span>
-                                    }
+                            }
                                 </td>
                                 <td>
                                     @if (item.Solution != null)
-                                    {
+                            {
 
                                         <a asp-controller="Solutions" asp-action="Details" asp-route-id="@item.SolutionID" class="btn-sm">
                                             <span class="label label-success">Poslato</span>
                                             @if (item.Solution.IsEvaluated)
-                                            {
+                            {
                                                 <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
                                             }
                                             else
