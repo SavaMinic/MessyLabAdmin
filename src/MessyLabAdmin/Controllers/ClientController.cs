@@ -15,6 +15,9 @@ using Action = MessyLabAdmin.Models.Action;
 using MessyLab.PicoComputer;
 using MessyLabAdmin.Services;
 using MessyLabAdmin.ViewModels.Client;
+using SendGrid.CSharp.HTTP.Client;
+using SendGrid.Helpers.Mail;
+using MessyLabAdmin.Util.Sendgrid;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -225,7 +228,12 @@ namespace MessyLabAdmin.Controllers
             var requestCode = Utility.CalculatePasswordRequestCode();
 
             // send email
-            //_email.SendEmailAsync("minic.sava@gmail.com", "Messy Lab password reset", "TESTING");
+            var content = string.Format(
+                "<h1>Messy Lab</h1>"
+                + "Hello {0},<br />\n"
+                + "Click <a href='{1}'>HERE</a> to reset your password.<br />\n"
+            , username, Url.Action("PasswordReset", "Client", new { code = requestCode }, "http", Request.PathBase));
+            _email.SendEmailAsync("minic.sava@gmail.com", "Messy Lab Password request", content);
 
             // create a password reset request
             var reset = new PasswordReset();

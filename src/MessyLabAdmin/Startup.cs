@@ -55,8 +55,10 @@ namespace MessyLabAdmin
             // add into first place so it's always executed
             services.Configure<MvcOptions>(options => options.ModelBinders.Insert(0, new DateTimeModelBinder()));
 
+            services.Configure<SendgrindEmailConfiguration>(Configuration.GetSection("Sendgrind"));
+
             // Add application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<IEmailSender, SendgridEmailSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
         }
 
