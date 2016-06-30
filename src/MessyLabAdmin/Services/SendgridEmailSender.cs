@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace MessyLabAdmin.Services
 {
@@ -30,14 +32,16 @@ namespace MessyLabAdmin.Services
         {
             Email from = new Email(_configuration.FromEmail, _configuration.FromName);
             Email to = new Email(email);
-            Content content = new Content("text/html", "<h1>test</h1>");
+            Content content = new Content("text/html", message);
             Mail mail = new Mail(from, subject, to, content);
 
             var sg = new SendGridAPIClient(_configuration.ApiKey);
             dynamic response = sg.client.mail.send.post(requestBody: mail.Get());
 
-            //var code = response.StatusCode;
-            //string result = response.Body.ReadAsStringAsync().Result;
+            if (response.StatusCode != HttpStatusCode.Accepted)
+            {
+                // TODO: error reporting
+            }
 
             return Task.FromResult(0);
         }

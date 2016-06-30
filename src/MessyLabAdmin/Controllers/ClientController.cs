@@ -229,10 +229,11 @@ namespace MessyLabAdmin.Controllers
 
             // send email
             var content = string.Format(
-                "<h1>Messy Lab</h1>"
-                + "Hello {0},<br />\n"
-                + "Click <a href='{1}'>HERE</a> to reset your password.<br />\n"
+                "Hello {0},<br /><br />"
+                + "Click <a href=\"{1}\">here</a> to reset your password.<br /><br />"
+                + "If you did not request the reset, just ignore this email.<br /><br />"
             , username, Url.Action("PasswordReset", "Client", new { code = requestCode }, "http", Request.PathBase));
+            // TODO: change to user email
             _email.SendEmailAsync("minic.sava@gmail.com", "Messy Lab Password request", content);
 
             // create a password reset request
