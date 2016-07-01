@@ -102,6 +102,7 @@
                     <table class="table center table-striped">
                         <tr>
                             <th>Naslov</th>
+                            <th>Varijanta</th>
                             <th>Početak</th>
                             <th>Kraj</th>
                             <th>Status</th>
@@ -116,6 +117,7 @@
                                         <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                                     </a>
                                 </td>
+                                <td>@item.AssignmentVariantIndex</td>
                                 <td>@item.Assignment.StartTime.ToString("dd.MM.yyyy")</td>
                                 <td>@item.Assignment.EndTime.ToString("dd.MM.yyyy")</td>
                                 <td>
