@@ -19,6 +19,7 @@ namespace MessyLabAdmin.Models
 
         public virtual Student Student { get; set; }
         public virtual Assignment Assignment { get; set; }
+        public int AssignmentVariantIndex { get; set; }
 
         public virtual Solution Solution { get; set; }
 

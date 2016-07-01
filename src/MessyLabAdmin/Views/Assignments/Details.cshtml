@@ -85,7 +85,7 @@
                         </dd>
                         <dt>Dodeljeno</dt>
                         <dd>
-                            @if (Model.SelectEnrollmentNumberDiv != null || Model.SelectEnrollmentNumberModulo != null
+                            @if (Model.SelectEnrollmentNumberModulo != null
                                 || Model.SelectEnrollmentYear != null || Model.SelectStatus != null)
                             {
                                 if (Model.SelectStatus != null)
@@ -107,9 +107,9 @@
                                 {
                                     <span>upisanim @Model.SelectEnrollmentYear</span>
                                 }
-                                if (Model.SelectEnrollmentNumberDiv != null && Model.SelectEnrollmentNumberModulo != null)
+                                if (Model.SelectEnrollmentNumberModulo != null)
                                 {
-                                    <span>sa indeksom @Model.SelectEnrollmentNumberDiv po modulu @Model.SelectEnrollmentNumberModulo</span>
+                                    <span>sa indeksom po modulu @Model.SelectEnrollmentNumberModulo</span>
                                 }
                                 <span>u trenutku kreiranja zadatka</span>
                             }

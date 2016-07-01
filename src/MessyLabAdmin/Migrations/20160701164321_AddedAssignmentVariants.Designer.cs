@@ -8,9 +8,10 @@ using MessyLabAdmin.Models;
 namespace MessyLabAdmin.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20160701164321_AddedAssignmentVariants")]
+    partial class AddedAssignmentVariants
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -96,7 +97,7 @@ namespace MessyLabAdmin.Migrations
 
                     b.Property<bool>("IsActive");
 
-                    b.Property<int>("SelectEnrollmentNumberModulo");
+                    b.Property<int?>("SelectEnrollmentNumberModulo");
 
                     b.Property<int?>("SelectEnrollmentYear");
 
@@ -194,8 +195,6 @@ namespace MessyLabAdmin.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AssignmentID");
-
-                    b.Property<int>("AssignmentVariantIndex");
 
                     b.Property<int?>("SolutionID");
 

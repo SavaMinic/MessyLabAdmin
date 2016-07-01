@@ -49,12 +49,11 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Kreiraj" class="btn btn-primary" />
+                        <input type="submit" value="Kreiraj" class="btn btn-primary" id="submitButton" />
                         <a class="btn btn-default" asp-action="Index">Nazad na listu</a>
                     </div>
                 </div>
             </div>
-            <input type="hidden" asp-for="SelectEnrollmentNumberDiv" />
             <input type="hidden" asp-for="SelectEnrollmentNumberModulo" />
             <input type="hidden" asp-for="SelectEnrollmentYear" />
             <input type="hidden" asp-for="SelectStatus" />
@@ -62,52 +61,58 @@
     </div>
 
     <div class="col-md-6">
-        <h2>Izabrani studenti:</h2>
+        <h2>
+            Varijante zadatka
+            <a href="#" class="btn" id="addVariant">
+                Dodaj novu varijantu <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+            </a>
+        </h2>
+        <small>Varijante će biti dodeljene prema ostatku deljenja studentskog indeksa sa brojem varijanti.</small>
+        <hr class="clearfix" />
+        <form id="AssignmentVariantsForm">
+            <div class="form-horizontal">
+                <div class="form-group assignmentVariant">
+                    <label class="col-md-2 control-label">0.</label>
+                    <a href="#" class="btn removeVariant">
+                        Ukloni varijantu <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+                    </a>
+                    <div class="col-md-9 assignmentVariantContainer">
+                        <textarea name="AssignmentVariants[]" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <hr />
         <form id="SelectStudentsForm" asp-action="StudentsCount" method="get">
             <div class="form-horizontal">
-                <hr />
-                <div class="form-group">
-                    <label for="StudentCount" class="col-md-6 control-label" style="font-size: 24px;">Broj studenata</label>
-                    <div class="col-md-6">
-                        <div name="StudentCount" id="StudentCount" style="font-size: 36px;">@ViewBag.StudentCount</div>
-                    </div>
-                </div>
-                <h3>Parametri:</h3>
-                <div class="form-group">
-                    <label for="EnrollmentNumberDiv" class="col-md-4 control-label">Broj indeksa daje ostatak</label>
-                    <div class="col-md-2">
-                        <input id="EnrollmentNumberDiv" name="EnrollmentNumberDiv" class="form-control" type="number" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="EnrollmentNumberModulo" class="col-md-4 control-label">po modulu</label>
-                    <div class="col-md-2">
-                        <input id="EnrollmentNumberModulo" name="EnrollmentNumberModulo" class="form-control" type="number" />
-                    </div>
-                </div>
-                <hr />
-                <div class="form-group">
-                    <label for="EnrollmentYear" class="col-md-4 control-label">Godina upisa</label>
-                    <div class="col-md-3">
-                        <input id="EnrollmentYear" name="EnrollmentYear" class="form-control" type="number" />
-                    </div>
-                </div>
-                <hr />
+                <h3>Opcioni parametri:</h3>
                 <div class="form-group">
                     <label for="State" class="col-md-3 control-label">Status</label>
                     <div class="col-md-8">
                         <label class="radio-inline">
-                            <input type="radio" name="Status" value="0" checked>
+                            <input type="radio" name="Status" value="0">
                             <span class="label label-primary">Nebitno</span>
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="Status" value="1">
+                            <input type="radio" name="Status" value="1" checked>
                             <span class="label label-success">Aktivan</span>
                         </label>
                         <label class="radio-inline">
                             <input type="radio" name="Status" value="-1">
                             <span class="label label-default">Neaktivan</span>
                         </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="EnrollmentYear" class="col-md-4 control-label">Godina upisa</label>
+                    <div class="col-md-3">
+                        <input id="EnrollmentYear" name="EnrollmentYear" class="form-control" type="number" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="StudentCount" class="col-md-6 control-label" style="font-size: 16px;">Broj studenata</label>
+                    <div class="col-md-6">
+                        <div name="StudentCount" id="StudentCount" style="font-size: 24px;">@ViewBag.StudentCount</div>
                     </div>
                 </div>
             </div>
@@ -129,7 +134,6 @@
                 closeText: "OK"
             });
 
-
             function RefreshStudentsCount() {
                 $("#StudentCount").text("?");
 
@@ -144,14 +148,49 @@
                 });
 
                 // refresh hidden fields
-                $("#SelectEnrollmentNumberDiv").val($("#EnrollmentNumberDiv").val());
-                $("#SelectEnrollmentNumberModulo").val($("#EnrollmentNumberModulo").val());
+                $("#SelectEnrollmentNumberModulo").val(1);
                 $("#SelectEnrollmentYear").val($("#EnrollmentYear").val());
                 $("#SelectStatus").val($("input[name=Status]:checked").val());
             }
 
-            $("#EnrollmentNumberDiv, #EnrollmentNumberModulo, #EnrollmentYear").keyup(RefreshStudentsCount);
+
+            RefreshStudentsCount();
+            $("#EnrollmentYear").keyup(RefreshStudentsCount);
             $("input[name=Status]").change(RefreshStudentsCount);
+
+            function RefreshVariantIndex()
+            {
+                $('.assignmentVariant').each(function (i, val) {
+                    $(this).find('label').text(i + '.');
+                });
+            }
+
+            var variantRow = $('.assignmentVariant')[0].outerHTML;
+            $("#addVariant").click(function () {
+                $("#AssignmentVariantsForm > .form-horizontal").append(variantRow);
+                RefreshVariantIndex();
+                return false;
+            });
+
+            $(document).on('click', '.removeVariant', function () {
+                $(this).parent('.assignmentVariant').remove();
+                RefreshVariantIndex();
+                return false;
+            });
+
+            $("#CreateForm").submit(function () {
+                var form = $(this);
+                var variants = $(".assignmentVariantContainer");
+                if (variants.length == 0)
+                    return false;
+
+                $("#SelectEnrollmentNumberModulo").val(variants.length);
+                variants.each(function () {
+                    var variant = $(this).clone().css('display', 'none');
+                    form.append(variant);
+                });
+                return true;
+            });
 
         });
     </script>

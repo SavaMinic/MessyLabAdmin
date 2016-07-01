@@ -128,7 +128,7 @@ namespace MessyLabAdmin.Controllers
         // POST: Assignments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Assignment assignment)
+        public IActionResult Create(Assignment assignment, string[] AssignmentVariants)
         {
             if (ModelState.IsValid)
             {
@@ -136,6 +136,12 @@ namespace MessyLabAdmin.Controllers
                 assignment.CreatedBy = _context.Users.Single(u => u.Id == User.GetUserId());
 
                 _context.Assignments.Add(assignment);
+                foreach(var variantText in AssignmentVariants)
+                {
+                    var variant = new AssignmentVariant() { Text = variantText };
+                    _context.Add(variant);
+                    assignment.AssignmentVariants.Add(variant);
+                }
                 _context.SaveChanges();
 
                 // create Student assignments
@@ -146,7 +152,8 @@ namespace MessyLabAdmin.Controllers
                     {
                         StudentID = s.ID,
                         AssignmentID = assignment.ID,
-                    });
+                        AssignmentVariantIndex = s.EnrollmentNumber % assignment.SelectEnrollmentNumberModulo
+                });
                 }
                 _context.SaveChanges();
 
@@ -163,7 +170,10 @@ namespace MessyLabAdmin.Controllers
                 return HttpNotFound();
             }
 
-            Assignment assignment = _context.Assignments.Include(a => a.StudentAssignments).Single(m => m.ID == id);
+            Assignment assignment = _context.Assignments
+                .Include(a => a.StudentAssignments)
+                .Include(a => a.AssignmentVariants)
+                .Single(m => m.ID == id);
             if (assignment == null)
             {
                 return HttpNotFound();
@@ -177,7 +187,7 @@ namespace MessyLabAdmin.Controllers
         // POST: Assignments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Assignment assignment)
+        public IActionResult Edit(Assignment assignment, string[] AssignmentVariants)
         {
             if (ModelState.IsValid)
             {
@@ -186,10 +196,18 @@ namespace MessyLabAdmin.Controllers
                 var old = _context.Assignments.AsNoTracking()
                     .Include(a => a.CreatedBy)
                     .Include(a => a.StudentAssignments)
+                    .Include(a => a.AssignmentVariants)
                     .Single(a => a.ID == assignment.ID);
                 assignment.CreatedTime = old.CreatedTime;
                 assignment.CreatedBy = old.CreatedBy;
 
+                _context.RemoveRange(old.AssignmentVariants);
+                foreach (var variantText in AssignmentVariants)
+                {
+                    var variant = new AssignmentVariant() { Text = variantText };
+                    _context.Add(variant);
+                    assignment.AssignmentVariants.Add(variant);
+                }
                 _context.Update(assignment);
                 _context.SaveChanges();
 
@@ -210,6 +228,7 @@ namespace MessyLabAdmin.Controllers
                         {
                             StudentID = s.ID,
                             AssignmentID = assignment.ID,
+                            AssignmentVariantIndex = s.EnrollmentNumber % assignment.SelectEnrollmentNumberModulo
                         });
                     }
                 }
@@ -250,29 +269,23 @@ namespace MessyLabAdmin.Controllers
         }
 
         [HttpGet]
-        public IActionResult StudentsCount(int? EnrollmentNumberDiv, int? EnrollmentNumberModulo, int? EnrollmentYear, int? Status)
+        public IActionResult StudentsCount(int? EnrollmentYear, int? Status)
         {
-            var students = SelectStudents(EnrollmentNumberDiv, EnrollmentNumberModulo, EnrollmentYear, Status);
+            var students = SelectStudents(EnrollmentYear, Status);
             return Ok(students.Count());
         }
 
         private IQueryable<Student> SelectStudents(Assignment assignment)
         {
             return SelectStudents(
-                assignment.SelectEnrollmentNumberDiv, 
-                assignment.SelectEnrollmentNumberModulo,
                 assignment.SelectEnrollmentYear,
                 assignment.SelectStatus
             );
         }
 
-        private IQueryable<Student> SelectStudents(int? EnrollmentNumberDiv = null, int? EnrollmentNumberModulo = null, int? EnrollmentYear = null, int? Status = null)
+        private IQueryable<Student> SelectStudents(int? EnrollmentYear = null, int? Status = null)
         {
             IQueryable<Student> students = _context.Students;
-            if (EnrollmentNumberDiv != null && EnrollmentNumberModulo != null && EnrollmentNumberModulo != 0)
-            {
-                students = students.Where(s => s.EnrollmentNumber % EnrollmentNumberModulo == EnrollmentNumberDiv);
-            }
             if (EnrollmentYear != null)
             {
                 students = students.Where(s => s.EnrollmentYear == EnrollmentYear);

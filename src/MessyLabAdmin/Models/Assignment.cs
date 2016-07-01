@@ -35,9 +35,9 @@ namespace MessyLabAdmin.Models
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime CreatedTime { get; set; }
 
+        public int SelectEnrollmentNumberModulo { get; set; }
+
         // For selecting students
-        public int? SelectEnrollmentNumberDiv { get; set; }
-        public int? SelectEnrollmentNumberModulo { get; set; }
         public int? SelectEnrollmentYear { get; set; }
         public int? SelectStatus { get; set; }
 
@@ -45,5 +45,7 @@ namespace MessyLabAdmin.Models
         public virtual ApplicationUser CreatedBy { get; set; }
 
         public virtual ICollection<StudentAssignment> StudentAssignments { get; set; }
+
+        public virtual ICollection<AssignmentVariant> AssignmentVariants { get; set; }
     }
 }
