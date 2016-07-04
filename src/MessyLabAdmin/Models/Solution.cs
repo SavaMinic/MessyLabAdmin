@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace MessyLabAdmin.Models
 {
@@ -25,5 +27,7 @@ namespace MessyLabAdmin.Models
 
         [Display(Name = "Checked and evaluated")]
         public bool IsEvaluated { get; set; }
+
+        public virtual ICollection<AssignmentTestResult> AssignmentTestResults { get; set; }
     }
 }

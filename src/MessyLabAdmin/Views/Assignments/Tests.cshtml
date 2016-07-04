@@ -1,0 +1,145 @@
+@model MessyLabAdmin.Models.Assignment
+
+@{
+    ViewData["Title"] = "Testovi za proveru";
+    ViewData["ActiveNav"] = "Assignments";
+}
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <h2>Izmena testova za proveru</h2>
+        <div class="col-md-12" style="display:none">
+            <div id="assignmentTestTemplate">
+                <div class="AssignmentTest">
+                    <input class="variantId" type="hidden" name="AssignmentTests[][].AssignmentVariantID" value="" />
+                    <div class="form-group">
+                        <label class="col-md-2 control-label testIndex">x.</label>
+                        <a href="#" class="btn removeTest">
+                            Ukloni test <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Ulazni podaci</label>
+                        <div class="col-md-9">
+                            <input name="AssignmentTests[][].GivenInput" class="form-control givenInput" value="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Očekivani izlaz</label>
+                        <div class="col-md-9">
+                            <input name="AssignmentTests[][].ExpectedOutput" class="form-control expectedOutput" value="" />
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+        </div>
+        <form asp-action="Tests" id="TestsForm">
+            <div class="form-horizontal">
+                <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ID" />
+                <div class="form-group">
+                    <label class="col-md-2 control-label" style="font-size: 18px">Opis zadatka</label>
+                    <div class="col-md-10">@Model.Description</div>
+                </div>
+                @{int i = 0; int j = 0;}
+                @foreach (AssignmentVariant variant in Model.AssignmentVariants)
+                {
+                    <div class="AssignmentVariant" data-id="@variant.ID">
+                        <input type="hidden" name="variants[@i].ID" value="@variant.ID" />
+                        <div class="form-group">
+                            <hr />
+                            <label class="col-md-2 control-label" style="font-size: 18px">Varijanta @(i+1)</label>
+                            <div class="col-md-10">@variant.Text</div>
+                        </div>
+                        <div class="TestContainer">
+                        @foreach (AssignmentTest test in variant.AssignmentTests)
+                        {
+                            <div class="AssignmentTest">
+                                <input type="hidden" name="variants[@i].AssignmentTests[@j].ID" value="@test.ID" />
+                                <input class="variantId" type="hidden" name="variants[@i].AssignmentTests[@j].AssignmentVariantID" value="@variant.ID" />
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label testIndex">@(j+1).</label>
+                                    <a href="#" class="btn removeTest">
+                                        Ukloni test <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+                                    </a>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Ulazni podaci</label>
+                                    <div class="col-md-9">
+                                        <input name="variants[@i].AssignmentTests[@j].GivenInput" class="form-control givenInput" value="@test.GivenInput" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Očekivani izlaz</label>
+                                    <div class="col-md-9">
+                                        <input name="variants[@i].AssignmentTests[@j].ExpectedOutput" class="form-control expectedOutput" value="@test.ExpectedOutput" />
+                                    </div>
+                                </div>
+                                <hr />
+                            </div>
+                            j++;
+                        }
+                        </div>
+                        <div class="form-group">
+                            <a href="#" class="btn addTest col-md-10 col-md-offset-1">
+                                Dodaj novi test <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                    </div>
+                    j = 0; i++;
+                }
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Sačuvaj" class="btn btn-primary" />
+                        <a class="btn btn-default" asp-action="Details" asp-route-id="@Model.ID">Nazad na listu</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+        $(".addTest").click(function () {
+            var variant = $(this).parents('.AssignmentVariant');
+            var test = $("#assignmentTestTemplate > .AssignmentTest").clone();
+
+            test.find(".variantId").val(variant.data('id'));
+            variant.find(".TestContainer").append(test);
+
+            RefreshTestsIndex(variant);
+            return false;
+        });
+
+        $(document).on('click', '.removeTest', function () {
+            var variant = $(this).parents('.AssignmentVariant');
+            $(this).parents('.AssignmentTest').remove();
+            RefreshTestsIndex(variant);
+            return false;
+        });
+
+        function RefreshTestsIndex(variant)
+        {
+            var variantIndex = variant.index('.AssignmentVariant');
+            variant.find('.AssignmentTest').each(function (i, val) {
+                var test = $(this);
+                var testName = 'variants[' + variantIndex + '].AssignmentTests[' + i + ']';
+                test.find('.variantId').prop('name', testName + '.AssignmentVariantID')
+                    .val(variant.data('id'));
+                test.find('.testIndex').text((i + 1) + '.');
+                test.find('.givenInput').prop('name', testName + '.GivenInput');
+                test.find('.expectedOutput').prop('name', testName + '.ExpectedOutput');
+            });
+        }
+
+    });
+</script>
+
+}

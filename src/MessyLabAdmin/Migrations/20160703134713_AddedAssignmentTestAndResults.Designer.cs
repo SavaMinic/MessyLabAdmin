@@ -8,9 +8,10 @@ using MessyLabAdmin.Models;
 namespace MessyLabAdmin.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20160703134713_AddedAssignmentTestAndResults")]
+    partial class AddedAssignmentTestAndResults
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -368,7 +369,8 @@ namespace MessyLabAdmin.Migrations
                 {
                     b.HasOne("MessyLabAdmin.Models.Assignment")
                         .WithMany()
-                        .HasForeignKey("AssignmentID");
+                        .HasForeignKey("AssignmentID")
+						.OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MessyLabAdmin.Models.Student")
                         .WithMany()

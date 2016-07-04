@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using Microsoft.AspNet.Mvc;
 
 namespace MessyLabAdmin.Models
 {
@@ -47,5 +49,16 @@ namespace MessyLabAdmin.Models
         public virtual ICollection<StudentAssignment> StudentAssignments { get; set; }
 
         public virtual ICollection<AssignmentVariant> AssignmentVariants { get; set; }
+
+        [NotMapped]
+        public int NumberOfTests
+        {
+            get
+            {
+                int s = 0;
+                foreach (var variant in AssignmentVariants) s += variant.AssignmentTests.Count;
+                return s;
+            }
+        }
     }
 }

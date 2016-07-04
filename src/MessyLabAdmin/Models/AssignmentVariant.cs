@@ -13,5 +13,7 @@ namespace MessyLabAdmin.Models
 
         public int AssignmentID { get; set; }
         public virtual Assignment Assignment { get; set; }
+
+        public virtual ICollection<AssignmentTest> AssignmentTests { get; set; }
     }
 }

@@ -37,7 +37,9 @@ namespace MessyLabAdmin.Controllers
             IQueryable<Assignment> assignments = _context.Assignments
                 .Include(a => a.CreatedBy)
                 .Include(a => a.StudentAssignments)
-                .ThenInclude(sa => sa.Student);
+                .ThenInclude(sa => sa.Student)
+                .Include(a => a.AssignmentVariants)
+                .ThenInclude(av => av.AssignmentTests);
 
             if (filteredTitle != null && filteredTitle != "")
             {
@@ -98,6 +100,8 @@ namespace MessyLabAdmin.Controllers
             Assignment assignment = _context.Assignments
                 .Include(a => a.CreatedBy)
                 .Include(a => a.StudentAssignments)
+                .Include(a => a.AssignmentVariants)
+                .ThenInclude(v => v.AssignmentTests)
                 .Single(m => m.ID == id);
 
             if (assignment == null)
@@ -116,6 +120,84 @@ namespace MessyLabAdmin.Controllers
             ViewBag.studentAssignments =  studentAssignments.ToPagedList(page ?? 1, 10);
 
             return View(assignment);
+        }
+
+        // GET: Assignments/Tests/5
+        public IActionResult Tests(int? id)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            Assignment assignment = _context.Assignments
+                .Include(a => a.CreatedBy)
+                .Include(a => a.StudentAssignments)
+                .Include(a => a.AssignmentVariants)
+                .ThenInclude(v => v.AssignmentTests)
+                .Single(m => m.ID == id);
+
+            if (assignment == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(assignment);
+        }
+
+        // POST: Assignments/Tests/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Tests(int? id, ICollection<AssignmentVariant> variants)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+            Assignment assignment = _context.Assignments.Single(a => a.ID == id);
+            if (assignment == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                foreach (var variant in variants)
+                {
+                    if (variant.AssignmentTests == null)
+                    {
+                        variant.AssignmentTests = new List<AssignmentTest>();
+                    }
+
+                    var currentTests = variant.AssignmentTests.ToList();
+                    var oldTests = _context.AssignmentTests.AsNoTracking().Where(t => t.AssignmentVariantID == variant.ID).ToList();
+
+                    var newTests = new List<AssignmentTest>();
+                    var updatedTests = new List<AssignmentTest>();
+                    // go through each current test
+                    foreach(var test in currentTests)
+                    {
+                        // if it exists in the old tests, then it needs to be updated
+                        if (oldTests.Remove(test))
+                        {
+                            // add it to updated list
+                            updatedTests.Add(test);
+                        }
+                        // else create it
+                        else newTests.Add(test);
+                    }
+                    // at the end, oldTests will have only tests that are discarded
+                    //TODO: izgleda kao da se nesto id-jevi pomesaju
+                    // aaa, bbb -> brisemo aaa, dodamo ccc -> save -> ccc, bbb
+                    // trebalo bi da bbb zadrzi isti id, al ne zadrzi ?!?
+                    _context.AddRange(newTests);
+                    _context.UpdateRange(updatedTests);
+                    _context.RemoveRange(oldTests);
+                }
+                _context.SaveChanges();
+                return RedirectToAction("Details", new { id = id });
+            }
+            return View(id);
         }
 
         // GET: Assignments/Create
