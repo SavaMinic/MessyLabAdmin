@@ -50,20 +50,8 @@ namespace MessyLabAdmin.Models
 
         public virtual ICollection<AssignmentVariant> AssignmentVariants { get; set; }
 
+        // Loaded from controller
         [NotMapped]
-        public int NumberOfTests
-        {
-            get
-            {
-                if (AssignmentVariants == null || AssignmentVariants.Count == 0) return 0;
-                int s = 0;
-                foreach (var variant in AssignmentVariants)
-                {
-                    if (variant.AssignmentTests == null) continue;
-                    s += variant.AssignmentTests.Count;
-                }
-                return s;
-            }
-        }
+        public int NumberOfTests { get; set; }
     }
 }

@@ -86,6 +86,11 @@ namespace MessyLabAdmin.Controllers
             ViewBag.allStatusTypes = GetAllStatusType();
             ViewBag.allCreatedByUsers = GetAllCreatedByUsers();
 
+            foreach(var assignment in assignments)
+            {
+                assignment.NumberOfTests = assignment.AssignmentVariants.Select(av => av.AssignmentTests.Count()).Aggregate((i,j) => i+ j);
+            }
+
             return View(assignments.ToPagedList(page ?? 1, 10));
         }
 
