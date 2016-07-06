@@ -5,6 +5,20 @@
     ViewData["ActiveNav"] = "Assignments";
 }
 
+<div id="assignmentVariantTemplate" style="display:none">
+    <div class="form-group assignmentVariant">
+        <input class="variantID" type="hidden" name="AssignmentVariants[].ID" value="0" />
+        <input class="AssignmentID" type="hidden" name="AssignmentVariants[].AssignmentID" value="@Model.ID" />
+        <label class="col-md-2 control-label">X.</label>
+        <a href="#" class="btn removeVariant">
+            Ukloni varijantu <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+        </a>
+        <div class="col-md-9 assignmentVariantContainer">
+            <textarea name="AssignmentVariants[].Text" class="form-control variantText" rows="4"></textarea>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-5 col-md-offset-1">
         <h2>Izmena zadatka</h2>
@@ -75,12 +89,14 @@
                 @for(int i = 0; i < Model.AssignmentVariants.Count; i++)
                 {
                 <div class="form-group assignmentVariant">
+                    <input class="variantID" type="hidden" name="AssignmentVariants[@i].ID" value="@Model.AssignmentVariants.ElementAt(i).ID" />
+                    <input class="AssignmentID" type="hidden" name="AssignmentVariants[@i].AssignmentID" value="@Model.ID" />
                     <label class="col-md-2 control-label">@i.</label>
                     <a href="#" class="btn removeVariant">
                         Ukloni varijantu <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
                     </a>
                     <div class="col-md-9 assignmentVariantContainer">
-                        <textarea name="AssignmentVariants[]" class="form-control" rows="4">@Model.AssignmentVariants.ElementAt(i).Text</textarea>
+                        <textarea name="AssignmentVariants[@i].Text" class="form-control variantText" rows="4">@Model.AssignmentVariants.ElementAt(i).Text</textarea>
                     </div>
                 </div> 
                 }
@@ -212,14 +228,19 @@
             });
 
             function RefreshVariantIndex() {
-                $('.assignmentVariant').each(function (i, val) {
-                    $(this).find('label').text(i + '.');
+                $("#AssignmentVariantsForm").find('.assignmentVariant').each(function (i, val) {
+                    var variant = $(this);
+                    variant.find('label').text(i + '.');
+                    var variantName = 'AssignmentVariants[' + i + '].';
+                    variant.find('.variantID').prop('name', variantName + 'ID');
+                    variant.find('.AssignmentID').prop('name', variantName + 'AssignmentID');
+                    variant.find('.variantText').prop('name', variantName + 'Text');
                 });
             }
 
-            var variantRow = $('.assignmentVariant')[0].outerHTML;
             $("#addVariant").click(function () {
-                $("#AssignmentVariantsForm > .form-horizontal").append(variantRow);
+                var variant = $("#assignmentVariantTemplate > .assignmentVariant").clone();
+                $("#AssignmentVariantsForm > .form-horizontal").append(variant);
                 RefreshVariantIndex();
                 return false;
             });
@@ -232,7 +253,7 @@
 
             $("#EditForm").submit(function () {
                 var form = $(this);
-                var variants = $(".assignmentVariantContainer");
+                var variants = $("#AssignmentVariantsForm").find(".assignmentVariant");
                 if (variants.length == 0)
                     return false;
 

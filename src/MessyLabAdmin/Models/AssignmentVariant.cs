@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MessyLabAdmin.Models
 {
-    public class AssignmentVariant
+    public class AssignmentVariant : IComparable<AssignmentVariant>, IEquatable<AssignmentVariant>
     {
         public int ID { get; set; }
 
@@ -15,5 +15,15 @@ namespace MessyLabAdmin.Models
         public virtual Assignment Assignment { get; set; }
 
         public virtual ICollection<AssignmentTest> AssignmentTests { get; set; }
+
+        public int CompareTo(AssignmentVariant other)
+        {
+            return ID.CompareTo(other.ID);
+        }
+
+        public bool Equals(AssignmentVariant other)
+        {
+            return ID == other.ID;
+        }
     }
 }

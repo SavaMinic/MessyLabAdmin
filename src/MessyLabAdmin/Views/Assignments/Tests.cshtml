@@ -5,36 +5,35 @@
     ViewData["ActiveNav"] = "Assignments";
 }
 
+<div id="assignmentTestTemplate" style="display:none">
+    <div class="AssignmentTest">
+        <input class="id" type="hidden" name="variants[].AssignmentTests[].ID" value="0" />
+        <input class="variantId" type="hidden" name="variants[].AssignmentTests[].AssignmentVariantID" value="" />
+        <div class="form-group">
+            <label class="col-md-2 control-label testIndex">x.</label>
+            <a href="#" class="btn removeTest">
+                Ukloni test <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+            </a>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Ulazni podaci</label>
+            <div class="col-md-9">
+                <input name="variants[].AssignmentTests[].GivenInput" class="form-control givenInput" value="" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Očekivani izlaz</label>
+            <div class="col-md-9">
+                <input name="variants[].AssignmentTests[].ExpectedOutput" class="form-control expectedOutput" value="" />
+            </div>
+        </div>
+        <hr />
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
         <h2>Izmena testova za proveru</h2>
-        <div class="col-md-12" style="display:none">
-            <div id="assignmentTestTemplate">
-                <div class="AssignmentTest">
-                    <input class="id" type="hidden" name="variants[].AssignmentTests[].ID" value="0" />
-                    <input class="variantId" type="hidden" name="variants[].AssignmentTests[].AssignmentVariantID" value="" />
-                    <div class="form-group">
-                        <label class="col-md-2 control-label testIndex">x.</label>
-                        <a href="#" class="btn removeTest">
-                            Ukloni test <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
-                        </a>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">Ulazni podaci</label>
-                        <div class="col-md-9">
-                            <input name="variants[].AssignmentTests[].GivenInput" class="form-control givenInput" value="" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">Očekivani izlaz</label>
-                        <div class="col-md-9">
-                            <input name="variants[].AssignmentTests[].ExpectedOutput" class="form-control expectedOutput" value="" />
-                        </div>
-                    </div>
-                    <hr />
-                </div>
-            </div>
-        </div>
         <form asp-action="Tests" id="TestsForm">
             <div class="form-horizontal">
                 <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>

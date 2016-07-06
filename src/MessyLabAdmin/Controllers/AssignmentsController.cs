@@ -266,10 +266,34 @@ namespace MessyLabAdmin.Controllers
         // POST: Assignments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Assignment assignment, string[] AssignmentVariants)
+        public IActionResult Edit(Assignment assignment)
         {
             if (ModelState.IsValid)
             {
+                // Create, Update, Delete variants
+                var currentVariants = assignment.AssignmentVariants.ToList();
+                var oldVariants = _context.AssignmentVariants.AsNoTracking().Where(av => av.AssignmentID == assignment.ID).ToList();
+
+                var newVariants = new List<AssignmentVariant>();
+                var updatedVariants = new List<AssignmentVariant>();
+                // go through each current test
+                foreach (var variant in currentVariants)
+                {
+                    // if it exists in the old variants, then it needs to be updated
+                    if (oldVariants.Remove(variant))
+                    {
+                        // add it to updated list
+                        updatedVariants.Add(variant);
+                    }
+                    // else create it
+                    else newVariants.Add(variant);
+                }
+                // at the end, oldVariants will have only tests that are discarded
+                _context.AddRange(newVariants);
+                _context.UpdateRange(updatedVariants);
+                _context.RemoveRange(oldVariants);
+                _context.SaveChanges();
+
                 // properties that are not in request, are null ?!?
                 // so we load them from disk
                 var old = _context.Assignments.AsNoTracking()
@@ -279,14 +303,6 @@ namespace MessyLabAdmin.Controllers
                     .Single(a => a.ID == assignment.ID);
                 assignment.CreatedTime = old.CreatedTime;
                 assignment.CreatedBy = old.CreatedBy;
-
-                _context.RemoveRange(old.AssignmentVariants);
-                foreach (var variantText in AssignmentVariants)
-                {
-                    var variant = new AssignmentVariant() { Text = variantText };
-                    _context.Add(variant);
-                    assignment.AssignmentVariants.Add(variant);
-                }
                 _context.Update(assignment);
                 _context.SaveChanges();
 

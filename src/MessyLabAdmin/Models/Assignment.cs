@@ -55,8 +55,13 @@ namespace MessyLabAdmin.Models
         {
             get
             {
+                if (AssignmentVariants == null || AssignmentVariants.Count == 0) return 0;
                 int s = 0;
-                foreach (var variant in AssignmentVariants) s += variant.AssignmentTests.Count;
+                foreach (var variant in AssignmentVariants)
+                {
+                    if (variant.AssignmentTests == null) continue;
+                    s += variant.AssignmentTests.Count;
+                }
                 return s;
             }
         }
