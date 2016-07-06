@@ -187,9 +187,6 @@ namespace MessyLabAdmin.Controllers
                         else newTests.Add(test);
                     }
                     // at the end, oldTests will have only tests that are discarded
-                    //TODO: izgleda kao da se nesto id-jevi pomesaju
-                    // aaa, bbb -> brisemo aaa, dodamo ccc -> save -> ccc, bbb
-                    // trebalo bi da bbb zadrzi isti id, al ne zadrzi ?!?
                     _context.AddRange(newTests);
                     _context.UpdateRange(updatedTests);
                     _context.RemoveRange(oldTests);

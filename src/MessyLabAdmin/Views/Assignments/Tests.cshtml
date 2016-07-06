@@ -11,7 +11,8 @@
         <div class="col-md-12" style="display:none">
             <div id="assignmentTestTemplate">
                 <div class="AssignmentTest">
-                    <input class="variantId" type="hidden" name="AssignmentTests[][].AssignmentVariantID" value="" />
+                    <input class="id" type="hidden" name="variants[].AssignmentTests[].ID" value="0" />
+                    <input class="variantId" type="hidden" name="variants[].AssignmentTests[].AssignmentVariantID" value="" />
                     <div class="form-group">
                         <label class="col-md-2 control-label testIndex">x.</label>
                         <a href="#" class="btn removeTest">
@@ -21,13 +22,13 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Ulazni podaci</label>
                         <div class="col-md-9">
-                            <input name="AssignmentTests[][].GivenInput" class="form-control givenInput" value="" />
+                            <input name="variants[].AssignmentTests[].GivenInput" class="form-control givenInput" value="" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Očekivani izlaz</label>
                         <div class="col-md-9">
-                            <input name="AssignmentTests[][].ExpectedOutput" class="form-control expectedOutput" value="" />
+                            <input name="variants[].AssignmentTests[].ExpectedOutput" class="form-control expectedOutput" value="" />
                         </div>
                     </div>
                     <hr />
@@ -56,7 +57,7 @@
                         @foreach (AssignmentTest test in variant.AssignmentTests)
                         {
                             <div class="AssignmentTest">
-                                <input type="hidden" name="variants[@i].AssignmentTests[@j].ID" value="@test.ID" />
+                                <input class="id" type="hidden" name="variants[@i].AssignmentTests[@j].ID" value="@test.ID" />
                                 <input class="variantId" type="hidden" name="variants[@i].AssignmentTests[@j].AssignmentVariantID" value="@variant.ID" />
                                 <div class="form-group">
                                     <label class="col-md-2 control-label testIndex">@(j+1).</label>
@@ -131,6 +132,7 @@
             variant.find('.AssignmentTest').each(function (i, val) {
                 var test = $(this);
                 var testName = 'variants[' + variantIndex + '].AssignmentTests[' + i + ']';
+                test.find('.id').prop('name', testName + '.ID');
                 test.find('.variantId').prop('name', testName + '.AssignmentVariantID')
                     .val(variant.data('id'));
                 test.find('.testIndex').text((i + 1) + '.');
