@@ -29,6 +29,8 @@ namespace MessyLabAdmin.Controllers
             Solution solution = _context.Solutions
                 .Include(s => s.Student)
                 .Include(s => s.Assignment)
+                .Include(s => s.AssignmentTestResults)
+                .ThenInclude(atr => atr.AssignmentTest)
                 .Single(m => m.ID == id);
             if (solution == null)
             {
@@ -43,37 +45,10 @@ namespace MessyLabAdmin.Controllers
                 var variant = _context.AssignmentVariants.Single(
                        av => av.AssignmentID == solution.AssignmentID && av.Index == studentAssignment.AssignmentVariantIndex
                 );
-                ViewBag.variantText = variant.Text;
+                ViewBag.variant = variant;
+                ViewBag.testsCount = _context.AssignmentTests.Count(at => at.AssignmentVariantID == variant.ID);
             }
             return View(solution);
-        }
-
-        // POST: Solutions/Create
-        [HttpPost]
-        public IActionResult Create(Solution solution)
-        {
-            if (ModelState.IsValid)
-            {
-                solution.CreatedTime = DateTime.Now;
-                _context.Solutions.Add(solution);
-                _context.SaveChanges();
-                return Ok(new { success = "ok" });
-            }
-            return HttpBadRequest(new { error = "invalid data" });
-        }
-
-        // POST: Solutions/Edit/5
-        [HttpPost]
-        public IActionResult Edit(Solution solution)
-        {
-            if (ModelState.IsValid)
-            {
-                solution.CreatedTime = DateTime.Now;
-                _context.Update(solution);
-                _context.SaveChanges();
-                return Ok(new { success = "ok" });
-            }
-            return HttpBadRequest(new { error = "invalid data" });
         }
 
         public IActionResult ToggleEvaluated(int? id)

@@ -8,9 +8,10 @@ using MessyLabAdmin.Models;
 namespace MessyLabAdmin.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20160730125129_AddedLastTestedTime")]
+    partial class AddedLastTestedTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -188,8 +189,6 @@ namespace MessyLabAdmin.Migrations
                     b.Property<DateTime>("CreatedTime");
 
                     b.Property<bool>("IsEvaluated");
-
-                    b.Property<DateTime>("LastTestedTime");
 
                     b.Property<int>("StudentID");
 

@@ -168,6 +168,7 @@ namespace MessyLabAdmin.Controllers
             var studentAssignment = _context.StudentAssignments
                 .Include(sa => sa.Assignment)
                 .Include(sa => sa.Solution)
+                .ThenInclude(s => s.AssignmentTestResults)
                 .SingleOrDefault(sa => sa.StudentID == student.ID
                     && sa.Assignment.IsActive
                     && sa.Assignment.StartTime <= DateTime.Now
@@ -176,6 +177,9 @@ namespace MessyLabAdmin.Controllers
                 );
             if (studentAssignment == null)
                 return HttpNotFound(new { error = -2 });
+
+            // this is just in case, it's encoded
+            code = code.ConvertUrlEncodedToNewLine();
 
             if (studentAssignment.Solution == null)
             {
@@ -196,9 +200,12 @@ namespace MessyLabAdmin.Controllers
                 studentAssignment.Solution.CreatedTime = DateTime.Now;
                 _context.Solutions.Update(studentAssignment.Solution);
             }
-
             _context.SaveChanges();
-            return Ok(new { ok = true });
+
+            // compile user code and test it out
+            var errors = CompileAndRunUserCode(studentAssignment, code);
+
+            return errors == null ? Ok(new { ok = true }) : Ok(new { errors = errors });
         }
 
         #endregion
@@ -305,42 +312,99 @@ namespace MessyLabAdmin.Controllers
 
         #region Solutions
 
-        // just testing
-        public IActionResult GetCheckResult(ushort test)
+        public IActionResult ManualTestOfSolution(int? id)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            Solution solution = _context.Solutions.Single(m => m.ID == id);
+            if (solution == null)
+            {
+                return HttpNotFound(new { error = -1 });
+            }
+
+            var studentAssignment = _context.StudentAssignments
+                .Include(sa => sa.Solution)
+                .ThenInclude(s => s.AssignmentTestResults)
+                .Single(
+                    sa => sa.AssignmentID == solution.AssignmentID && sa.SolutionID == solution.ID
+                );
+            if (studentAssignment == null)
+            {
+                return HttpNotFound(new { error = -2 });
+            }
+
+            var errors = CompileAndRunUserCode(studentAssignment, solution.Code);
+
+            return RedirectToAction("Details", "Solutions", new { id = id });
+        }
+
+        /// <summary>
+        /// Compiles and runs the code on Pico VM
+        /// </summary>
+        /// <param name="studentAssignment">StudentAssignment, requires its Solution and its TestResults to be loaded</param>
+        /// <param name="code">User source code</param>
+        /// <returns></returns>
+        private List<Error> CompileAndRunUserCode(StudentAssignment studentAssignment, string code)
         {
             Assembler a = new Assembler();
-            //a.LoadFromFile("filename");
-            a.LoadFromString("z = 0\n" +
-                  "a = 1\n" +
-                  "b = 2\n" +
-                  "c = 3\n" +
-                  "d = 4\n" +
-                  "e = 5\n" +
-                  "f = 6\n" +
-                  "g = 7\n" +
-                  "ORG 8\n" +
-                  "MOV a, 666\n" +
-                  "OUT a\n" +
-                  "STOP");
+            a.LoadFromString(code);
             if (!a.Process())
             {
-                return Ok(new { errors = a.Errors });
+                return a.Errors;
             }
 
             var hex = a.ExportToHex();
 
-            ushort[] givenInput = new ushort[] { };
-            ushort[] expectedOutput = new ushort[] { test };
+            // get tests
+            var variant = _context.AssignmentVariants.Single(av => av.AssignmentID == studentAssignment.AssignmentID && av.Index == studentAssignment.AssignmentVariantIndex);
+            var tests = _context.AssignmentTests.Where(at => at.AssignmentVariantID == variant.ID);
 
-            VirtualMachine vm = new VirtualMachine(givenInput, expectedOutput);
-            vm.LoadFromLines(hex);
-            RuntimeException e = vm.Run();
-
-            if (e== null || e is NormalTerminationRuntimeException)
+            // mark as testing, clear all past tests
+            studentAssignment.Solution.LastTestedTime = DateTime.Now;
+            if (studentAssignment.Solution.AssignmentTestResults != null)
             {
-                return Ok(new { ok = true });
+                studentAssignment.Solution.AssignmentTestResults.Clear();
             }
-            return Ok(new { error = e.ToString() });
+            _context.Update(studentAssignment.Solution);
+            _context.SaveChanges();
+
+            var errors = new List<Error>();
+            foreach(var test in tests)
+            {
+                ushort[] givenInput = test.GivenInput != null
+                    ? test.GivenInput.Trim().Split(' ').Select(ushort.Parse).ToArray()
+                    : new ushort[0];
+                ushort[] expectedOutput = test.ExpectedOutput != null
+                    ? test.ExpectedOutput.Trim().Split(' ').Select(ushort.Parse).ToArray()
+                    : new ushort[0];
+
+                VirtualMachine vm = new VirtualMachine(givenInput, expectedOutput);
+                vm.LoadFromLines(hex);
+                RuntimeException e = vm.Run();
+
+                // save test result
+                var testResult = new AssignmentTestResult()
+                {
+                    AssignmentTestID = test.ID,
+                    SolutionID = studentAssignment.Solution.ID,
+                    CreatedTime = DateTime.Now,
+                    CalculatedOutput = (vm.Processor.IODevice as TestingIODevice).CalculatedOutput,             
+                };
+                if (e == null || e is NormalTerminationRuntimeException)
+                {
+                    testResult.IsSuccess = true;
+                }
+                else
+                {
+                    errors.Add(new Error() { ID = 666, Description = e.ToString() });
+                }
+                _context.AssignmentTestResults.Add(testResult);
+            }
+            _context.SaveChanges();
+            return errors.Count > 0 ? errors : null;
         }
 
         #endregion

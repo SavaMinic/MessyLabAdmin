@@ -43,7 +43,14 @@ namespace MessyLabAdmin.Util
 
         public static string ConvertNewLineToBR(this string s)
         {
+            if (s == null || s == "") return "";
             return Regex.Replace(s, Environment.NewLine, "<br />");
+        }
+
+        public static string ConvertUrlEncodedToNewLine(this string s)
+        {
+            if (s == null || s == "") return "";
+            return Regex.Replace(s, "%0D%0A", Environment.NewLine);
         }
     }
 }

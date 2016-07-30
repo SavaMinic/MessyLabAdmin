@@ -28,6 +28,12 @@ namespace MessyLabAdmin.Models
         [Display(Name = "Checked and evaluated")]
         public bool IsEvaluated { get; set; }
 
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Last tested at")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
+        public DateTime LastTestedTime { get; set; }
+
         public virtual ICollection<AssignmentTestResult> AssignmentTestResults { get; set; }
     }
 }

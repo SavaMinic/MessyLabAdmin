@@ -23,6 +23,8 @@
                                 @Html.DisplayFor(model => model.Assignment.Title)
                             </a>
                         </dd>
+                        <dt>Varijanta</dt>
+                        <dd>@(ViewBag.variant.Index+1)</dd>
                     </dl>
                     <dl class="dl-horizontal">
                         <dt>
@@ -68,12 +70,12 @@
                                 <span class="label label-warning">Nije pregledan</span>
                             } 
                             <a asp-action="ToggleEvaluated" asp-route-id="@Model.ID" 
-                               class="btn @(Model.IsEvaluated ? "btn-default" : "btn-primary")">
+                               class="btn btn-sm @(Model.IsEvaluated ? "btn-default" : "btn-primary")">
                                 @(Model.IsEvaluated ? "Otkaži" : "Pregledaj")
                             </a>
                         </dd>
                     </dl>
-</div>
+                </div>
                 <div class="col-md-8">
                     <h2 class="column-header">
                         Rešenje
@@ -89,9 +91,9 @@
                             Varijanta
                         </dt>
                         <dd>
-                            @if (ViewBag.variantText != null)
+                            @if (ViewBag.variant != null)
                             {
-                                @Html.Raw(((string)ViewBag.variantText).ConvertNewLineToBR())
+                                @Html.Raw(((string)ViewBag.variant.Text).ConvertNewLineToBR())
                             }
                             else
                             {
@@ -107,6 +109,62 @@
                             @Html.Raw(Model.Code.ConvertNewLineToBR())
                         </dd>
                     </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Testiran
+                        </dt>
+                        <dd>
+                            @if (Model.LastTestedTime != null)
+                            {
+                                @Model.LastTestedTime.ToString("dd.MM.yyyy HH:mm:ss")
+                            }
+                            else
+                            {
+                                <span class="label label-warning">Testovi nisu izvršeni!</span>
+                            }
+                            <a class="btn btn-sm btn-info" 
+                               asp-controller="Client" asp-action="ManualTestOfSolution" asp-route-id="@Model.ID">
+                                Pokreni testiranje
+                            </a>
+                        </dd>
+                        <dt>Broj testova</dt>
+                        <dd>@(ViewBag.testsCount ?? 0)</dd>
+                    </dl>
+                    <table class="table center table-striped">
+                        <tr>
+                            <th></th>
+                            <th>Dati ulaz</th>
+                            <th>Očekivani izlaz</th>
+                            <th>Izračunati izlaz</th>
+                            <th>Status</th>
+                        </tr>
+                        @if(Model.AssignmentTestResults.Count == 0)
+                        {
+                            <tr><th colspan="4"><span class="label label-danger">Kod nije moguće prevesti!</span></th></tr>
+                        }
+                        @{int i = 0;}
+                        @foreach (var testResult in Model.AssignmentTestResults)
+                        {
+                            <tr>
+                                <th>Test @(++i)</th>
+                                <td>@(testResult.AssignmentTest.GivenInput ?? "/")</td>
+                                <td>@(testResult.AssignmentTest.ExpectedOutput ?? "/")</td>
+                                <td>
+                                    @(testResult.CalculatedOutput ?? "/")
+                                </td>
+                                <td>
+                                    @if (testResult.IsSuccess)
+                                    {
+                                        <span class="label label-success">OK</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="label label-danger">GREŠKA</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
                 </div>
             </div>
         </div>

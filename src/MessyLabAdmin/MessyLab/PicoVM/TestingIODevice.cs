@@ -13,6 +13,14 @@ namespace MessyLab.PicoComputer
         private List<ushort> expectedOutput;
         private List<ushort> output;
 
+        public string CalculatedOutput
+        {
+            get
+            {
+                return string.Join(" ", output);
+            }
+        }
+
         public TestingIODevice(ushort[] given, ushort[] expected)
         {
             givenInput = given;
