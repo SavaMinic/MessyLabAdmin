@@ -6,13 +6,29 @@
 }
 
 <h2>Studenti</h2>
+@{var ok = Context.Request.Query["ok"];}
+@if (ok != Microsoft.Extensions.Primitives.StringValues.Empty)
+{
+    <h3 id="notice" style="cursor:pointer">
+    @if (ok == "True")
+    {
+        int cnt = 0;
+        int.TryParse(Context.Request.Query["c"], out cnt);
+        <span class="label label-success center-block">Uspešno učitano @cnt studenata</span>
+    }
+    else
+    {
+        <span class="label label-danger center-block">Neuspelo učitavanje, fajl nije odgovarajući!</span>
+    }
+    </h3>
+}
 
 <div class="row tools-bar">
     <div class="btn-group col-md-8">
         <a asp-action="Create" class="btn">
             Kreiraj studenta <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </a>
-        <a asp-action="#" class="btn" onClick="javascript: alert('TO BE IMPLEMENTED'); return false;">
+        <a class="btn" id="importStudents">
             Učitaj studente (.CSV) <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
         </a>
     </div>
@@ -56,6 +72,14 @@
                     <label for="solutionCount">Rešeni zadaci:</label>
                     <input id="solutionCount" name="solutionCount" type="text" value="@ViewBag.solutionCount" class="form-control input-xs" />
                 </div>
+            </form>
+        </div>
+        <div id="importStudentsBar" class="form-group col-md-6 col-md-offset-3" style="display:none">
+            <form method="post" asp-action="ImportStudents" enctype="multipart/form-data">
+                <input type="file" name="studentsCSV" class="pull-left" />
+                <button id="import-cancel" class="btn btn-sm pull-right btn-default" style="margin: 0 10px;">Otkaži</button>
+                <button type="submit" class="btn btn-sm pull-right btn-info">Učitaj studente</button>
+                <div class="clearfix"></div>
             </form>
         </div>
     </div>
@@ -135,7 +159,7 @@
                 $("#search-bar, #search-cancel").fadeIn("fast");
             }
             return false;
-        })
+        });
 
         $("#search-cancel").click(function() {
             $("#search-bar").add(this).fadeOut("fast", function () {
@@ -143,6 +167,18 @@
             });
             return false;
         });
+
+        $("#importStudents").click(function () {
+            $("#importStudentsBar").fadeToggle("fast");
+        });
+
+        $("#import-cancel").click(function () {
+            $("#importStudentsBar").fadeOut("fast");
+            return false;
+        });
+
+        setTimeout(function () { $("#notice").fadeOut("slow"); }, 5000);
+        $("#notice").click(function () { $(this).fadeOut("slow"); });
     });
     </script>
 

@@ -6,6 +6,9 @@ using MessyLabAdmin.Models;
 using MessyLabAdmin.Util;
 using System.Collections.Generic;
 using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Http;
+using Microsoft.Net.Http.Headers;
+using System.IO;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -194,6 +197,63 @@ namespace MessyLabAdmin.Controllers
             _context.SaveChanges();
 
             return Ok(new { ok = true });
+        }
+
+        [HttpPost]
+        public IActionResult ImportStudents(IFormFile studentsCSV)
+        {
+            if (studentsCSV == null)
+            {
+                return HttpNotFound();
+            }
+
+            // parse CSV file and insert students
+            bool parsingOK = true;
+            int addedStudentsCount = 0;
+            using (var stream = studentsCSV.OpenReadStream())
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    while(!reader.EndOfStream)
+                    {
+                        var line = reader.ReadLine();
+                        if (line == null) { parsingOK = false; break; }
+                        if (line == "") continue;
+
+                        var data = line.Split(',');
+                        if(data.Length < 5) { parsingOK = false;  break; }
+
+                        try
+                        {
+                            var student = new Student()
+                            {
+                                EnrollmentYear = int.Parse(data[0]),
+                                EnrollmentNumber = int.Parse(data[1]),
+                                FirstName = data[2],
+                                LastName = data[3],
+                                IsActive = bool.Parse(data[4]),
+                            };
+                            student.Username = data.Length > 5 ? data[5] : student.DefaultUsername;
+                            student.InitialPassword = data.Length > 6 ? data[6] : Utility.CalculatePasswordRequestCode(8);
+                            student.PasswordHash = Utility.CalculatePasswordHash(student.Username, student.PasswordHash);
+                            _context.Students.Add(student);
+                            addedStudentsCount++;
+                        }
+                        catch (System.FormatException)
+                        {
+                            parsingOK = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (parsingOK)
+            {
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index", new { ok = parsingOK, c = addedStudentsCount });
         }
     }
 }

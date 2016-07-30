@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Microsoft.AspNet.Mvc;
+using System.Text;
 
 namespace MessyLabAdmin.Models
 {
@@ -71,5 +72,20 @@ namespace MessyLabAdmin.Models
         public virtual ICollection<StudentAssignment> StudentAssignments { get; set; }
 
         public virtual ICollection<Action> Actions { get; set; }
+
+        [NotMapped]
+        public string DefaultUsername
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                sb.Append(LastName.ElementAt(0));
+                sb.Append(FirstName.ElementAt(0));
+                sb.Append(EnrollmentYear.ToString().PadLeft(4, '0').Substring(2,2));
+                sb.Append(EnrollmentNumber.ToString().PadLeft(4, '0'));
+                sb.Append('d');
+                return sb.ToString();
+            }
+        }
     }
 }

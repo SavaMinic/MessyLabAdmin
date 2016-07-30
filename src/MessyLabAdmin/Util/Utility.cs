@@ -11,6 +11,8 @@ namespace MessyLabAdmin.Util
     public static class Utility
     {
 
+        private static Random Random = new Random();
+
         public static string CalculatePasswordHash(string username, string pass)
         {
             using (SHA1 sha1Hash = SHA1.Create())
@@ -33,10 +35,9 @@ namespace MessyLabAdmin.Util
         {
             var code = new char[len];
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var random = new Random();
             for (int i = 0; i < len; i++)
             {
-                code[i] = chars[random.Next(chars.Length)];
+                code[i] = chars[Random.Next(chars.Length)];
             }
             return new string(code);
         }
