@@ -30,6 +30,7 @@ namespace MessyLabAdmin.Controllers
                 .Take(10);
             ViewBag.latestSolutions = _context.Solutions
                 .Include(s => s.Assignment)
+                .Include(s => s.Student)
                 .OrderByDescending(s => s.CreatedTime)
                 .Take(10);
             return View();

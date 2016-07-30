@@ -10,7 +10,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-5">
         <h2>Najnovije akcije:</h2>
         <table class="table center table-striped">
             <tr>
@@ -27,7 +27,7 @@
                     </td>
                     <td>
                         <a asp-controller="Students" asp-action="Details" asp-route-id="@item.StudentID">
-                            @Html.DisplayFor(modelItem => item.Student.FullName)
+                            @Html.DisplayFor(modelItem => item.Student.FullName) 
                         </a>
                     </td>
                     <td>
@@ -42,7 +42,7 @@
             }
         </table>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-7">
         <h2>Najnovija rešenja:</h2>
         <table class="table center table-striped">
             <tr>
@@ -86,11 +86,5 @@
                 </tr>
             }
         </table>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <h2>Statistika:</h2>
-        <p>TODO</p>
     </div>
 </div>
