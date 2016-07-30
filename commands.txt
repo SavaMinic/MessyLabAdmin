@@ -10,3 +10,27 @@ Lazy loading is not working, so you need to use .Include() inside controllers wh
 Many-to-many is not working automatically in EF7, just make join table between those 2 entities.
 
 dnvm install latest -r coreclr
+
+
+Having more than one foreign key in EF7 RC1
+http://stackoverflow.com/a/35101573
+modelBuilder.Entity("MessyLabAdmin.Models.Solution", b =>
+{
+	b.HasOne("MessyLabAdmin.Models.Assignment")
+		.WithMany()
+		.HasForeignKey("AssignmentID")
+		.OnDelete(DeleteBehavior.Restrict); // MUST ADD THIS
+
+	b.HasOne("MessyLabAdmin.Models.Student")
+		.WithMany()
+		.HasForeignKey("StudentID");
+});
+
+
+
+Oct 2015
+https://github.com/aspnet/EntityFramework/issues/3312
+The short answer is that EF7 does not currently support automatic lazy loading in the same way that EF6 did.
+ I've seen it discussed in a few places and if anyone is better informed feel free to correct me but as far as 
+ I am aware it is fairly far down their priority list and if some posts I have read are to be believed, 
+ that's if they choose to implement it at all.

@@ -83,7 +83,20 @@
                             Opis
                         </dt>
                         <dd>
-                            @Html.DisplayFor(model => model.Assignment.Description)
+                            @Html.Raw(Model.Assignment.Description.ConvertNewLineToBR())
+                        </dd>
+                        <dt>
+                            Varijanta
+                        </dt>
+                        <dd>
+                            @if (ViewBag.variantText != null)
+                            {
+                                @Html.Raw(((string)ViewBag.variantText).ConvertNewLineToBR())
+                            }
+                            else
+                            {
+                                <span>???</span>
+                            }
                         </dd>
                     </dl>
                     <dl class="dl-horizontal">
@@ -91,7 +104,7 @@
                             Rešenje
                         </dt>
                         <dd>
-                            @Model.Code
+                            @Html.Raw(Model.Code.ConvertNewLineToBR())
                         </dd>
                     </dl>
                 </div>

@@ -9,6 +9,7 @@
     <div class="form-group assignmentVariant">
         <input class="variantID" type="hidden" name="AssignmentVariants[].ID" value="0" />
         <input class="AssignmentID" type="hidden" name="AssignmentVariants[].AssignmentID" value="@Model.ID" />
+        <input class="variantIndex" type="hidden" name="AssignmentVariants[].Index" value="0" />
         <label class="col-md-2 control-label">X.</label>
         <a href="#" class="btn removeVariant">
             Ukloni varijantu <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
@@ -39,6 +40,13 @@
                     <div class="col-md-10">
                         <textarea asp-for="Description" class="form-control" rows="8"></textarea>
                         <span asp-validation-for="Description" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StartingCode" class="col-md-2 control-label">Inicijalni kod (opciono)</label>
+                    <div class="col-md-10">
+                        <textarea asp-for="StartingCode" class="form-control" rows="8"></textarea>
+                        <span asp-validation-for="StartingCode" class="text-danger" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -91,6 +99,7 @@
                 <div class="form-group assignmentVariant">
                     <input class="variantID" type="hidden" name="AssignmentVariants[@i].ID" value="@Model.AssignmentVariants.ElementAt(i).ID" />
                     <input class="AssignmentID" type="hidden" name="AssignmentVariants[@i].AssignmentID" value="@Model.ID" />
+                    <input class="variantIndex" type="hidden" name="AssignmentVariants[@i].Index" value="@i" />
                     <label class="col-md-2 control-label">@i.</label>
                     <a href="#" class="btn removeVariant">
                         Ukloni varijantu <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
@@ -235,6 +244,7 @@
                     variant.find('.variantID').prop('name', variantName + 'ID');
                     variant.find('.AssignmentID').prop('name', variantName + 'AssignmentID');
                     variant.find('.variantText').prop('name', variantName + 'Text');
+                    variant.find('.variantIndex').prop('name', variantName + 'Index').val(i);
                 });
             }
 

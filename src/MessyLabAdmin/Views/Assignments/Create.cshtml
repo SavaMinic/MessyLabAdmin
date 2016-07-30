@@ -26,6 +26,13 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label asp-for="StartingCode" class="col-md-2 control-label">Inicijalni kod (opciono)</label>
+                    <div class="col-md-10">
+                        <textarea asp-for="StartingCode" class="form-control" rows="8"></textarea>
+                        <span asp-validation-for="StartingCode" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
                     <label asp-for="StartTime" class="col-md-2 control-label">Početak</label>
                     <div class="col-md-4">
                         <input asp-for="StartTime" class="form-control" />

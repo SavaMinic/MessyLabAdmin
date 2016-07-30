@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MessyLabAdmin.Util
@@ -38,6 +39,11 @@ namespace MessyLabAdmin.Util
                 code[i] = chars[random.Next(chars.Length)];
             }
             return new string(code);
+        }
+
+        public static string ConvertNewLineToBR(this string s)
+        {
+            return Regex.Replace(s, Environment.NewLine, "<br />");
         }
     }
 }

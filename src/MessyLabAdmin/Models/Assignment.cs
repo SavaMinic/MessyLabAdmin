@@ -17,6 +17,8 @@ namespace MessyLabAdmin.Models
         [Required(ErrorMessage = "Unesite opis zadatka")]
         public string Description { get; set; }
 
+        public string StartingCode { get; set; }
+
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
 

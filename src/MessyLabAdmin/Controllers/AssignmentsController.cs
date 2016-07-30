@@ -220,9 +220,10 @@ namespace MessyLabAdmin.Controllers
                 assignment.CreatedBy = _context.Users.Single(u => u.Id == User.GetUserId());
 
                 _context.Assignments.Add(assignment);
+                var index = 0;
                 foreach(var variantText in AssignmentVariants)
                 {
-                    var variant = new AssignmentVariant() { Text = variantText };
+                    var variant = new AssignmentVariant() { Text = variantText, Index = index++ };
                     _context.Add(variant);
                     assignment.AssignmentVariants.Add(variant);
                 }

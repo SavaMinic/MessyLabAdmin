@@ -35,6 +35,16 @@ namespace MessyLabAdmin.Controllers
                 return HttpNotFound();
             }
 
+            var studentAssignment = _context.StudentAssignments.Single(
+                sa => sa.AssignmentID == solution.AssignmentID && sa.StudentID == solution.StudentID
+            );
+            if (studentAssignment != null)
+            {
+                var variant = _context.AssignmentVariants.Single(
+                       av => av.AssignmentID == solution.AssignmentID && av.Index == studentAssignment.AssignmentVariantIndex
+                );
+                ViewBag.variantText = variant.Text;
+            }
             return View(solution);
         }
 

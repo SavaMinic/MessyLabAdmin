@@ -22,7 +22,7 @@ namespace MessyLabAdmin.Models
         public int StudentID { get; set; }
         public virtual Student Student { get; set; }
         
-        public int AssignmentID { get; set; }
+        public int? AssignmentID { get; set; }
         public virtual Assignment Assignment { get; set; }
 
         [Display(Name = "Checked and evaluated")]

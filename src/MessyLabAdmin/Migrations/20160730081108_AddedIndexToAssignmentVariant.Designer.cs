@@ -8,9 +8,10 @@ using MessyLabAdmin.Models;
 namespace MessyLabAdmin.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20160730081108_AddedIndexToAssignmentVariant")]
+    partial class AddedIndexToAssignmentVariant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -104,7 +105,8 @@ namespace MessyLabAdmin.Migrations
 
                     b.Property<DateTime>("StartTime");
 
-                    b.Property<string>("StartingCode");
+                    b.Property<string>("StartingCode")
+                        .IsRequired();
 
                     b.Property<string>("Title")
                         .IsRequired();

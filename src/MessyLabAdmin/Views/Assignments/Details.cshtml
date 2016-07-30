@@ -27,7 +27,7 @@
                             Opis
                         </dt>
                         <dd>
-                            @Html.DisplayFor(model => model.Description)
+                            @Html.Raw(Model.Description.ConvertNewLineToBR())
                         </dd>
                     </dl>
                     <dl class="dl-horizontal">
@@ -122,6 +122,22 @@
                         <dt>Broj varijanti:</dt>
                         <dd>@Model.AssignmentVariants.Count</dd>
                     </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Inicijalni kod</dt>
+                        <dd>
+                            @if (Model.StartingCode != "")
+                            {
+                                <a id="toggleStartingCode" href="#" class="btn btn-info btn-sm">Prikaži</a>
+                                <div id="startingCode" style="display:none; font-style:italic; border: 1px solid #dcdcdc; padding: 10px; margin: 10px 0;">
+                                    @Html.Raw(Model.StartingCode.ConvertNewLineToBR())
+                                </div>
+                            }
+                            else
+                            {
+                                <span>/</span>
+                            }
+                        </dd>
+                    </dl>
                 </div>
                 <div class="col-md-6 col-md-offset-1">
                     <h2 class="column-header">Dodeljeno studentima</h2>
@@ -187,3 +203,19 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            $("#toggleStartingCode").click(function () {
+                $("#startingCode").toggle();
+                return false;
+            });
+        });
+    </script>
+
+}
