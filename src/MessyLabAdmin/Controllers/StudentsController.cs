@@ -9,6 +9,7 @@ using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Http;
 using Microsoft.Net.Http.Headers;
 using System.IO;
+using MessyLabAdmin.Services;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -16,10 +17,12 @@ namespace MessyLabAdmin.Controllers
     public class StudentsController : Controller
     {
         private ApplicationDbContext _context;
+        private IEmailSender _email;
 
-        public StudentsController(ApplicationDbContext context)
+        public StudentsController(ApplicationDbContext context, IEmailSender emailSender)
         {
-            _context = context;    
+            _context = context;
+            _email = emailSender;  
         }
 
         // GET: Students
@@ -258,6 +261,42 @@ namespace MessyLabAdmin.Controllers
             TempData.Add("addedStudentsCount", addedStudentsCount);
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult ResetPasswordAndSendInitial(int? id)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            Student student = _context.Students.Single(m => m.ID == id);
+            if (student == null)
+            {
+                return HttpNotFound();
+            }
+
+            // reset the password
+            student.PasswordHash = Utility.CalculatePasswordHash(student.Username, student.InitialPassword);
+            _context.Update(student);
+            var isOK = _context.SaveChanges() == 1;
+
+            // send the email with initial password
+            var content = string.Format(
+                "Hello {0},<br /><br />"
+                + "Login to Messy Lab with following data:<br />"
+                + "Username: <b>{1}</b><br />"
+                + "Password: <b>{2}</b><br /><br />"
+                + "Change your initial password after logging in.<br /><br />"
+                + "If you did not request the reset, just ignore this email.<br /><br />"
+            , student.FullName, student.Username, student.InitialPassword);
+            // TODO: change to user email
+            _email.SendEmailAsync("minic.sava@gmail.com", "Messy Lab initial Password", content);
+
+            TempData.Clear();
+            TempData.Add("isOK", isOK);
+
+            return RedirectToAction("Details", new { id = id });
         }
     }
 }

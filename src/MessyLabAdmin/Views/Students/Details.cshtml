@@ -4,6 +4,19 @@
     ViewData["Title"] = "Detalji o studentu";
     ViewData["ActiveNav"] = "Students";
 }
+@if (TempData["isOK"] != null)
+{
+    <h3 id="notice" style="cursor:pointer">
+        @if ((bool)TempData["isOK"])
+        {
+            <span class="label label-success center-block">Uspešno resetovana lozinka.</span>
+        }
+        else
+        {
+            <span class="label label-danger center-block">Neuspelo resetovanje lozinke, pokušajte ponovo!</span>
+        }
+    </h3>
+}
 
 <div class="row">
     <div class="col-md-12">
@@ -96,6 +109,16 @@
                             }
                         </dd>
                     </dl>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Resetuj lozinku i <br /> pošalji email sa <br />inicijalnom lozinkom
+                        </dt>
+                        <dd>
+                            <a id="resetPassword" asp-action="ResetPasswordAndSendInitial" asp-route-id="@Model.ID" class="btn btn-danger" style="margin-top:12px;">
+                                RESET
+                            </a>
+                        </dd>
+                    </dl>
                 </div>
                 <div class="col-md-8">
                     <h2 class="column-header">Zadaci</h2>
@@ -170,3 +193,18 @@
         </div>
     </div>
 </div>
+
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#resetPassword").click(function () {
+                return confirm("Do you really want to reset password to initial one?");
+            });
+
+            setTimeout(function () { $("#notice").fadeOut("slow"); }, 5000);
+            $("#notice").click(function () { $(this).fadeOut("slow"); });
+        });
+    </script>
+}
