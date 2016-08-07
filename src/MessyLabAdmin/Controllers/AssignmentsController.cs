@@ -9,6 +9,9 @@ using System.Security.Claims;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNet.Authorization;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -374,6 +377,69 @@ namespace MessyLabAdmin.Controllers
         {
             var students = SelectStudents(EnrollmentYear, Status);
             return Ok(students.Count());
+        }
+
+        [HttpGet]
+        public IActionResult AllSolutions(int? id)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            Assignment assignment = _context.Assignments.Single(m => m.ID == id);
+            if (assignment == null)
+            {
+                return HttpNotFound();
+            }
+
+            var solutions = _context.Solutions
+                .Include(s => s.Student)
+                .Where(s => s.AssignmentID == id);
+            
+            var downloadFileName = DateTime.Now.ToString("yyyyMMdd_HHmm") + "_resenja_" + id;
+            // by default, empty zip file content
+            byte[] data = new byte[] { 80, 75, 05, 06, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00 };
+
+            try
+            {
+                // create subfolder inside Temp server folder
+                DirectoryInfo tempFolder = new DirectoryInfo(Path.GetTempPath());
+                DirectoryInfo solutionsFolder = tempFolder.CreateSubdirectory(downloadFileName + Path.GetRandomFileName());
+
+                // write solutions into files inside temp subfolder
+                foreach (var solution in solutions)
+                {
+                    var fileName = solution.Student.Username + ".pca";
+                    using (StreamWriter streamWriter = System.IO.File.CreateText(Path.Combine(solutionsFolder.FullName, fileName)))
+                    {
+                        streamWriter.WriteLine("; Student: " + solution.Student.Username + " , " + solution.Student.FullName);
+                        streamWriter.WriteLine("; Created: " + solution.CreatedTime.ToString("dd-MM-yy HH:mm:ss"));
+                        streamWriter.Write(solution.Code);
+                        streamWriter.Flush();
+                    }
+                }
+
+                // create ZIP file from the temp subfolder with solutions
+                var zipFilePath = Path.Combine(tempFolder.FullName, downloadFileName + ".zip");
+                ZipFile.CreateFromDirectory(solutionsFolder.FullName, zipFilePath);
+                data = System.IO.File.ReadAllBytes(zipFilePath);
+
+                // at the end remove the zip file and temp folder
+                System.IO.File.Delete(zipFilePath);
+                Directory.Delete(solutionsFolder.FullName, true);
+            }
+            catch (Exception e)
+            {
+                var error = new FileContentResult(Encoding.ASCII.GetBytes("ERROR: " + e.Message), "text/plain");
+                error.FileDownloadName = "error.txt";
+                return error;
+            }
+
+            var res = new FileContentResult(data, "application/zip");
+            res.FileDownloadName = downloadFileName + ".zip";
+            
+            return res;
         }
 
         private IQueryable<Student> SelectStudents(Assignment assignment)

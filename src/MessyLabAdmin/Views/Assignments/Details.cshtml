@@ -140,7 +140,10 @@
                     </dl>
                 </div>
                 <div class="col-md-6 col-md-offset-1">
-                    <h2 class="column-header">Dodeljeno studentima</h2>
+                    <h2 class="column-header">
+                        Dodeljeno studentima
+                        <a asp-action="AllSolutions" asp-route-id="@Model.ID" class="tiny-link">Sva rešenja (.zip) <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
+                    </h2>
                     <table class="table center table-striped">
                         <tr>
                             <th>ID</th>

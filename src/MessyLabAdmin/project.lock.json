@@ -2030,6 +2030,45 @@
           "lib/DNXCore50/System.IO.dll": {}
         }
       },
+      "System.IO.Compression/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Collections": "4.0.0",
+          "System.IO": "4.0.0",
+          "System.Resources.ResourceManager": "4.0.0",
+          "System.Runtime": "4.0.0",
+          "System.Runtime.Extensions": "4.0.0",
+          "System.Runtime.InteropServices": "4.0.0",
+          "System.Text.Encoding": "4.0.0",
+          "System.Threading": "4.0.0",
+          "System.Threading.Tasks": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.IO.Compression.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet/System.IO.Compression.dll": {}
+        }
+      },
+      "System.IO.Compression.ZipFile/4.0.1-beta-23516": {
+        "type": "package",
+        "dependencies": {
+          "System.IO": "4.0.10",
+          "System.IO.Compression": "4.0.0",
+          "System.IO.FileSystem": "4.0.0",
+          "System.IO.FileSystem.Primitives": "4.0.0",
+          "System.Resources.ResourceManager": "4.0.0",
+          "System.Runtime": "4.0.20",
+          "System.Runtime.Extensions": "4.0.10",
+          "System.Text.Encoding": "4.0.10"
+        },
+        "compile": {
+          "ref/dotnet5.2/System.IO.Compression.ZipFile.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/System.IO.Compression.ZipFile.dll": {}
+        }
+      },
       "System.IO.FileSystem/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -5155,6 +5194,31 @@
         },
         "runtime": {
           "lib/dotnet/System.IO.Compression.dll": {}
+        }
+      },
+      "System.IO.Compression.clrcompression-x86/4.0.0": {
+        "type": "package",
+        "native": {
+          "runtimes/win7-x86/native/clrcompression.dll": {}
+        }
+      },
+      "System.IO.Compression.ZipFile/4.0.1-beta-23516": {
+        "type": "package",
+        "dependencies": {
+          "System.IO": "4.0.10",
+          "System.IO.Compression": "4.0.0",
+          "System.IO.FileSystem": "4.0.0",
+          "System.IO.FileSystem.Primitives": "4.0.0",
+          "System.Resources.ResourceManager": "4.0.0",
+          "System.Runtime": "4.0.20",
+          "System.Runtime.Extensions": "4.0.10",
+          "System.Text.Encoding": "4.0.10"
+        },
+        "compile": {
+          "ref/dotnet5.2/System.IO.Compression.ZipFile.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/System.IO.Compression.ZipFile.dll": {}
         }
       },
       "System.IO.FileSystem/4.0.0": {
@@ -8382,6 +8446,31 @@
         },
         "runtime": {
           "lib/dotnet/System.IO.Compression.dll": {}
+        }
+      },
+      "System.IO.Compression.clrcompression-x64/4.0.0": {
+        "type": "package",
+        "native": {
+          "runtimes/win7-x64/native/clrcompression.dll": {}
+        }
+      },
+      "System.IO.Compression.ZipFile/4.0.1-beta-23516": {
+        "type": "package",
+        "dependencies": {
+          "System.IO": "4.0.10",
+          "System.IO.Compression": "4.0.0",
+          "System.IO.FileSystem": "4.0.0",
+          "System.IO.FileSystem.Primitives": "4.0.0",
+          "System.Resources.ResourceManager": "4.0.0",
+          "System.Runtime": "4.0.20",
+          "System.Runtime.Extensions": "4.0.10",
+          "System.Text.Encoding": "4.0.10"
+        },
+        "compile": {
+          "ref/dotnet5.2/System.IO.Compression.ZipFile.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/System.IO.Compression.ZipFile.dll": {}
         }
       },
       "System.IO.FileSystem/4.0.0": {
@@ -12189,6 +12278,60 @@
         "System.IO.Compression.nuspec"
       ]
     },
+    "System.IO.Compression.clrcompression-x64/4.0.0": {
+      "type": "package",
+      "sha512": "Lqr+URMwKzf+8HJF6YrqEqzKzDzFJTE4OekaxqdIns71r8Ufbd8SbZa0LKl9q+7nu6Em4SkIEXVMB7plSXekOw==",
+      "files": [
+        "runtimes/win10-x64/native/ClrCompression.dll",
+        "runtimes/win7-x64/native/clrcompression.dll",
+        "System.IO.Compression.clrcompression-x64.4.0.0.nupkg",
+        "System.IO.Compression.clrcompression-x64.4.0.0.nupkg.sha512",
+        "System.IO.Compression.clrcompression-x64.nuspec"
+      ]
+    },
+    "System.IO.Compression.clrcompression-x86/4.0.0": {
+      "type": "package",
+      "sha512": "GmevpuaMRzYDXHu+xuV10fxTO8DsP7OKweWxYtkaxwVnDSj9X6RBupSiXdiveq9yj/xjZ1NbG+oRRRb99kj+VQ==",
+      "files": [
+        "runtimes/win10-x86/native/ClrCompression.dll",
+        "runtimes/win7-x86/native/clrcompression.dll",
+        "System.IO.Compression.clrcompression-x86.4.0.0.nupkg",
+        "System.IO.Compression.clrcompression-x86.4.0.0.nupkg.sha512",
+        "System.IO.Compression.clrcompression-x86.nuspec"
+      ]
+    },
+    "System.IO.Compression.ZipFile/4.0.1-beta-23516": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "3Y7jL2A1/gjN6hcQnMyNLhSJWeHA8j5yu1fzPu63QwdwwwjvN8EiF3Tke53XOmyIfgPYVVLtC3VhoSARaKbKiw==",
+      "files": [
+        "lib/dotnet5.4/System.IO.Compression.ZipFile.dll",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net46/System.IO.Compression.ZipFile.dll",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "ref/dotnet5.2/de/System.IO.Compression.ZipFile.xml",
+        "ref/dotnet5.2/es/System.IO.Compression.ZipFile.xml",
+        "ref/dotnet5.2/fr/System.IO.Compression.ZipFile.xml",
+        "ref/dotnet5.2/it/System.IO.Compression.ZipFile.xml",
+        "ref/dotnet5.2/ja/System.IO.Compression.ZipFile.xml",
+        "ref/dotnet5.2/ko/System.IO.Compression.ZipFile.xml",
+        "ref/dotnet5.2/ru/System.IO.Compression.ZipFile.xml",
+        "ref/dotnet5.2/System.IO.Compression.ZipFile.dll",
+        "ref/dotnet5.2/System.IO.Compression.ZipFile.xml",
+        "ref/dotnet5.2/zh-hans/System.IO.Compression.ZipFile.xml",
+        "ref/dotnet5.2/zh-hant/System.IO.Compression.ZipFile.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net46/System.IO.Compression.ZipFile.dll",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "System.IO.Compression.ZipFile.4.0.1-beta-23516.nupkg",
+        "System.IO.Compression.ZipFile.4.0.1-beta-23516.nupkg.sha512",
+        "System.IO.Compression.ZipFile.nuspec"
+      ]
+    },
     "System.IO.FileSystem/4.0.0": {
       "type": "package",
       "serviceable": true,
@@ -14349,7 +14492,8 @@
     ],
     "DNXCore,Version=v5.0": [
       "System.IO >= 4.0.11-beta-23516",
-      "System.IO.FileSystem >= 4.0.0"
+      "System.IO.FileSystem >= 4.0.0",
+      "System.IO.Compression.ZipFile >= 4.0.1-beta-23516"
     ]
   }
 }
