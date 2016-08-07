@@ -203,7 +203,7 @@ namespace MessyLabAdmin.Controllers
             _context.SaveChanges();
 
             // compile user code and test it out
-            var errors = CompileAndRunUserCode(studentAssignment, code);
+            var errors = CompileAndRunUserCode(studentAssignment, code, false);
 
             return errors == null ? Ok(new { ok = true }) : Ok(new { errors = errors });
         }
@@ -352,7 +352,7 @@ namespace MessyLabAdmin.Controllers
         /// <param name="studentAssignment">StudentAssignment, requires its Solution and its TestResults to be loaded</param>
         /// <param name="code">User source code</param>
         /// <returns></returns>
-        private List<Error> CompileAndRunUserCode(StudentAssignment studentAssignment, string code)
+        private List<Error> CompileAndRunUserCode(StudentAssignment studentAssignment, string code, bool returnExpectedOutputError = true)
         {
             Assembler a = new Assembler();
             a.LoadFromString(code);
@@ -404,7 +404,10 @@ namespace MessyLabAdmin.Controllers
                 }
                 else
                 {
-                    errors.Add(new Error() { ID = 666, Description = e.ToString() });
+                    if (returnExpectedOutputError)
+                    {
+                        errors.Add(new Error() { ID = 666, Description = e.ToString() });
+                    }
                 }
                 _context.AssignmentTestResults.Add(testResult);
             }
