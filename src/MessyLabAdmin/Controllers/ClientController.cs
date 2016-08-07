@@ -317,6 +317,7 @@ namespace MessyLabAdmin.Controllers
 
         #region Solutions
 
+        [HttpGet]
         public IActionResult ManualTestOfSolution(int? id)
         {
             if (id == null)
@@ -342,6 +343,9 @@ namespace MessyLabAdmin.Controllers
             }
 
             var errors = CompileAndRunUserCode(studentAssignment, solution.Code);
+
+            TempData.Clear();
+            TempData.Add("isOK", errors == null);
 
             return RedirectToAction("Details", "Solutions", new { id = id });
         }

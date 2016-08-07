@@ -5,6 +5,33 @@
     ViewData["ActiveNav"] = "Assignments";
 }
 
+@if (TempData["isOK"] != null)
+{
+    <h3 class="notice" style="cursor:pointer">
+        @if ((bool)TempData["isOK"])
+        {
+            <span class="label label-success center-block">Testiranje uspešno završeno sa očekivanim rezultatom!</span>
+        }
+        else
+        {
+            <span class="label label-danger center-block">Testiranje je završeno sa neodgovarajućim rezultatom!</span>
+        }
+    </h3>
+}
+@if (TempData["isEvaluated"] != null)
+{
+    <h3 class="notice" style="cursor:pointer">
+        @if ((bool)TempData["isEvaluated"])
+        {
+            <span class="label label-info center-block">Rešenje označeno kao PREGLEDANO!</span>
+        }
+        else
+        {
+            <span class="label label-info center-block">Rešenje označeno kao NIJE PREGLEDANO!</span>
+        }
+    </h3>
+}
+
 <div class="row">
     <div class="col-md-12">
         <div>
@@ -170,3 +197,14 @@
         </div>
     </div>
 </div>
+@section scripts
+{
+
+    <script type="text/javascript">
+        $(function () {
+            setTimeout(function () { $(".notice").fadeOut("slow"); }, 5000);
+            $(".notice").click(function () { $(this).fadeOut("slow"); });
+        });
+    </script>
+
+}

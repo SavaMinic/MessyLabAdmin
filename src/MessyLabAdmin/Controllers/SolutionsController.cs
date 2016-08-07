@@ -68,6 +68,9 @@ namespace MessyLabAdmin.Controllers
             _context.Update(solution);
             _context.SaveChanges();
 
+            TempData.Clear();
+            TempData.Add("isEvaluated", solution.IsEvaluated);
+
             return RedirectToAction("Details", new { id = id });
         }
     }
