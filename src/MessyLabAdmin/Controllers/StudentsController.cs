@@ -290,8 +290,7 @@ namespace MessyLabAdmin.Controllers
                 + "Change your initial password after logging in.<br /><br />"
                 + "If you did not request the reset, just ignore this email.<br /><br />"
             , student.FullName, student.Username, student.InitialPassword);
-            // TODO: change to user email
-            _email.SendEmailAsync("minic.sava@gmail.com", "Messy Lab initial Password", content);
+            _email.SendEmailAsync(student.DefaultEmail, "Messy Lab initial Password", content);
 
             TempData.Clear();
             TempData.Add("isOK", isOK);

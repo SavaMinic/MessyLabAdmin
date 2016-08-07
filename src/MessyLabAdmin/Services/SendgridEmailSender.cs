@@ -16,6 +16,8 @@ namespace MessyLabAdmin.Services
         public string ApiKey { get; set; }
         public string FromEmail { get; set; }
         public string FromName { get; set; }
+        public bool UseTestingEmailDestination { get; set; }
+        public string TestingEmailDestination { get; set; }
     }
 
     public class SendgridEmailSender : IEmailSender
@@ -31,7 +33,7 @@ namespace MessyLabAdmin.Services
         public Task SendEmailAsync(string email, string subject, string message)
         {
             Email from = new Email(_configuration.FromEmail, _configuration.FromName);
-            Email to = new Email(email);
+            Email to = new Email(_configuration.UseTestingEmailDestination ? _configuration.TestingEmailDestination : email);
             Content content = new Content("text/html", message);
             Mail mail = new Mail(from, subject, to, content);
 

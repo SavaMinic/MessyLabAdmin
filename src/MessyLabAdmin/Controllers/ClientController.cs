@@ -240,8 +240,7 @@ namespace MessyLabAdmin.Controllers
                 + "Click <a href=\"{1}\">here</a> to reset your password.<br /><br />"
                 + "If you did not request the reset, just ignore this email.<br /><br />"
             , username, Url.Action("PasswordReset", "Client", new { code = requestCode }, "http", Request.PathBase));
-            // TODO: change to user email
-            _email.SendEmailAsync("minic.sava@gmail.com", "Messy Lab Password request", content);
+            _email.SendEmailAsync(student.DefaultEmail, "Messy Lab Password request", content);
 
             // create a password reset request
             var reset = new PasswordReset();
@@ -301,7 +300,13 @@ namespace MessyLabAdmin.Controllers
                         _context.SaveChanges();
                         ViewBag.Success = true;
 
-                        // TODO: send success email
+                        // send success email
+                        var content = string.Format(
+                            "Hello {0},<br /><br />"
+                            + "Password for your account {1} has been changed successfully."
+                            + "If you didn't do this change, contact administrator because <b>your account might be compromised</b>.<br /><br />"
+                        , student.FullName, student.Username);
+                        _email.SendEmailAsync(student.DefaultEmail, "Messy Lab password changed!", content);
                     }
                 }
             }

@@ -87,5 +87,14 @@ namespace MessyLabAdmin.Models
                 return sb.ToString();
             }
         }
+
+        [NotMapped]
+        public string DefaultEmail
+        {
+            get
+            {
+                return Username + "@student.etf.rs";
+            }
+        }
     }
 }
