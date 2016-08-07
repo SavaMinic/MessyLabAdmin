@@ -253,7 +253,11 @@ namespace MessyLabAdmin.Controllers
                 _context.SaveChanges();
             }
 
-            return RedirectToAction("Index", new { ok = parsingOK, c = addedStudentsCount });
+            TempData.Clear();
+            TempData.Add("parsingOK", parsingOK);
+            TempData.Add("addedStudentsCount", addedStudentsCount);
+
+            return RedirectToAction("Index");
         }
     }
 }

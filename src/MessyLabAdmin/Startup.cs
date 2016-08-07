@@ -50,6 +50,8 @@ namespace MessyLabAdmin
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddCaching();
+            services.AddSession();
             services.AddMvc();
 
             // add into first place so it's always executed
@@ -94,6 +96,7 @@ namespace MessyLabAdmin
             app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
 
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseIdentity();
 

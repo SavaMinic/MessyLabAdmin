@@ -6,15 +6,12 @@
 }
 
 <h2>Studenti</h2>
-@{var ok = Context.Request.Query["ok"];}
-@if (ok != Microsoft.Extensions.Primitives.StringValues.Empty)
+@if (TempData["parsingOK"] != null)
 {
     <h3 id="notice" style="cursor:pointer">
-    @if (ok == "True")
+    @if ((bool)TempData["parsingOK"])
     {
-        int cnt = 0;
-        int.TryParse(Context.Request.Query["c"], out cnt);
-        <span class="label label-success center-block">Uspešno učitano @cnt studenata</span>
+        <span class="label label-success center-block">Uspešno učitano @((int)TempData["addedStudentsCount"]) studenata</span>
     }
     else
     {
