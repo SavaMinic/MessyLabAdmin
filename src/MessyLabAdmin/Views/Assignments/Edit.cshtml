@@ -194,6 +194,11 @@
                 closeText: "OK"
             });
 
+            // initialize selection form
+            $("#EnrollmentYear").val($("#SelectEnrollmentYear").val());
+            var status = $("#SelectStatus").val() || "0";
+            $("input[name=Status][value=" + status + "]").prop("checked", "checked");
+
             function SimpleRefresh() { RefreshStudentsCount(true); }
 
             function RefreshStudentsCount(refreshHiddenFields) {
@@ -221,15 +226,9 @@
                 }
             }
 
-            SimpleRefresh();
+            RefreshStudentsCount(false);
             $("#EnrollmentYear").keyup(SimpleRefresh);
             $("input[name=Status]").change(SimpleRefresh);
-
-            // initialize selection form
-            $("#EnrollmentNumberModulo").val($("#SelectEnrollmentNumberModulo").val());
-            $("#EnrollmentYear").val($("#SelectEnrollmentYear").val());
-            var status = $("#SelectStatus").val() || "0";
-            $("input[name=Status][value=" + status + "]").prop("checked", "checked");
 
             $("#ChangesWarning").change(function () {
                 var checked = $(this).is(":checked");
