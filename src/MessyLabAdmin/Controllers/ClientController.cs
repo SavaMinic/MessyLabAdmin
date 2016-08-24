@@ -124,6 +124,7 @@ namespace MessyLabAdmin.Controllers
 
             var studentAssignments = _context.StudentAssignments
                 .Include(sa => sa.Assignment)
+                .ThenInclude(a => a.AssignmentVariants)
                 .Include(sa => sa.Solution)
                 .Where(sa => sa.StudentID == student.ID
                     && sa.Assignment.IsActive 
@@ -134,11 +135,20 @@ namespace MessyLabAdmin.Controllers
             var ret = new List<AssignmentData>();
             foreach (var studentAssignment in studentAssignments)
             {
+                // get variant text
+                var variants = studentAssignment.Assignment.AssignmentVariants.ToArray();
+                var variantIndex = studentAssignment.AssignmentVariantIndex;
+                var variantText = "?";
+                if (variantIndex >= 0 && variantIndex < variants.Length)
+                {
+                    variantText = variants[variantIndex].Text;
+                }
+
                 var data = new AssignmentData()
                 {
                     ID = studentAssignment.Assignment.ID,
                     Title = studentAssignment.Assignment.Title,
-                    Description = studentAssignment.Assignment.Description,
+                    Description = studentAssignment.Assignment.Description + Environment.NewLine + variantText,
                     StartTime = studentAssignment.Assignment.StartTime,
                     EndTime = studentAssignment.Assignment.EndTime,
                     CanSendSolution = studentAssignment.Assignment.EndTime >= DateTime.Now,
