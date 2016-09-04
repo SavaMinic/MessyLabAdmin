@@ -442,6 +442,64 @@ namespace MessyLabAdmin.Controllers
             return res;
         }
 
+        [HttpGet]
+        public IActionResult Report(int? id)
+        {
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+
+            Assignment assignment = _context.Assignments.Single(m => m.ID == id);
+            if (assignment == null)
+            {
+                return HttpNotFound();
+            }
+
+            var studentAssignments = _context.StudentAssignments
+                .Include(sa => sa.Solution)
+                .ThenInclude(so => so.AssignmentTestResults)
+                .Include(sa => sa.Student)
+                .Where(sa => sa.AssignmentID == id);
+
+            var report = new StringBuilder();
+            report.AppendLine("# Assignment " + id + ": " + assignment.Title);
+            report.AppendLine("# full name, student id, variant, tests, [tested]");
+            foreach(var studentAssignment in studentAssignments)
+            {
+                report.Append(studentAssignment.Student.FullName);
+                report.Append(", ");
+                report.Append(studentAssignment.Student.StudentIdentification);
+                report.Append(", Variant ");
+                report.Append(studentAssignment.AssignmentVariantIndex + 1);
+                report.Append(", ");
+                if (studentAssignment.Solution != null)
+                {
+                    if (studentAssignment.Solution.AssignmentTestResults.Count > 0)
+                    {
+                        var successCount = studentAssignment.Solution.AssignmentTestResults.Count(tr => tr.IsSuccess);
+                        report.Append(successCount + "/" + studentAssignment.Solution.AssignmentTestResults.Count + " passed");
+                        report.Append(", ");
+                        report.Append(studentAssignment.Solution.CreatedTime.ToString("dd-MM-yy HH:mm:ss"));
+                    }
+                    else
+                    {
+                        report.Append("NO TESTS");
+                    }
+                }
+                else
+                {
+                    report.Append("NO SOLUTION");
+                }
+                report.AppendLine();
+            }
+
+            var res = new FileContentResult(Encoding.ASCII.GetBytes(report.ToString()), "text/plain");
+            res.FileDownloadName = DateTime.Now.ToString("yyyyMMdd_HHmm") + "_izvestaj_" + id + ".txt";
+
+            return res;
+        }
+
         private IQueryable<Student> SelectStudents(Assignment assignment)
         {
             return SelectStudents(
