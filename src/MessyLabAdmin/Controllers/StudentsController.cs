@@ -204,6 +204,21 @@ namespace MessyLabAdmin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeactivateAllStudents()
+        {
+            var activeStudents = _context.Students.Where(s => s.IsActive);
+            activeStudents.ToList().ForEach(s => s.IsActive = false);
+            _context.UpdateRange(activeStudents);
+            _context.SaveChanges();
+
+            TempData.Clear();
+            TempData.Add("deactivationOK", true);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
         public IActionResult ImportStudents(IFormFile studentsCSV)
         {
             if (studentsCSV == null)

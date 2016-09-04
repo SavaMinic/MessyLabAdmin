@@ -19,6 +19,19 @@
     }
     </h3>
 }
+@if (TempData["deactivationOK"] != null)
+{
+    <h3 class="notice" style="cursor:pointer">
+        @if ((bool)TempData["deactivationOK"])
+        {
+            <span class="label label-info center-block">Svi studenti su deaktivirani!</span>
+        }
+        else
+        {
+            <span class="label label-info center-block">Greška pri deaktiviranju studenata!</span>
+        }
+    </h3>
+}
 
 <div class="row tools-bar">
     <div class="btn-group col-md-8">
@@ -28,6 +41,11 @@
         <a class="btn" id="importStudents">
             Učitaj studente (.CSV) <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
         </a>
+        <form method="post" asp-antiforgery="true" asp-action="DeactivateAllStudents">
+            <button class="btn btn-link" id="deactivateAllStudents">
+                Deaktiviraj sve studente <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+        </form>
     </div>
 
     <div class="btn-group col-md-4">
@@ -148,6 +166,9 @@
     <script type="text/javascript">
     $(function () {
 
+        setTimeout(function () { $(".notice").fadeOut("slow"); }, 5000);
+        $(".notice").click(function () { $(this).fadeOut("slow"); });
+
         $("#search-toggle").click(function () {
             if ($("#search-bar").is(":visible")) {
                 $("#search-bar form").submit();
@@ -176,6 +197,11 @@
 
         setTimeout(function () { $("#notice").fadeOut("slow"); }, 5000);
         $("#notice").click(function () { $(this).fadeOut("slow"); });
+
+        $("#deactivateAllStudents").click(function () {
+            var answer = prompt("Da li ste sigurni da želite da deaktivirate sve studente?\n\nUnesite RAZUMEM da bi izvršili operaciju.");
+            return answer != null && answer.toUpperCase() == "RAZUMEM";
+        });
     });
     </script>
 
