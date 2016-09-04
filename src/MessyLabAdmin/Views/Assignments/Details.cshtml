@@ -123,19 +123,18 @@
                         <dd>@Model.AssignmentVariants.Count</dd>
                     </dl>
                     <dl class="dl-horizontal">
-                        <dt>Inicijalni kod</dt>
+                        <dt>Varijante</dt>
                         <dd>
-                            @if (Model.StartingCode != "")
-                            {
-                                <a id="toggleStartingCode" href="#" class="btn btn-info btn-sm">Prikaži</a>
-                                <div id="startingCode" style="display:none; font-style:italic; border: 1px solid #dcdcdc; padding: 10px; margin: 10px 0;">
-                                    @Html.Raw(Model.StartingCode.ConvertNewLineToBR())
-                                </div>
-                            }
-                            else
-                            {
-                                <span>/</span>
-                            }
+                            <a id="toggleVariants" href="#" class="btn btn-info btn-sm">Prikaži</a>
+                            <div id="variants" style="display:none; font-style:italic; border: 1px solid #dcdcdc; padding: 10px; margin: 10px 0;">
+                                @foreach(var variant in Model.AssignmentVariants)
+                                {
+                                    <dl class="dl-horizontal">
+                                        <dt style="width:20px;">@variant.Index</dt>
+                                        <dd style="margin-left:30px;">@variant.Text</dd>
+                                    </dl>
+                                }
+                            </div>
                         </dd>
                     </dl>
                 </div>
@@ -214,8 +213,8 @@
     <script type="text/javascript">
         $(function () {
 
-            $("#toggleStartingCode").click(function () {
-                $("#startingCode").toggle();
+            $("#toggleVariants").click(function () {
+                $("#variants").toggle();
                 return false;
             });
         });
