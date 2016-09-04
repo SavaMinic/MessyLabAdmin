@@ -23,5 +23,7 @@ namespace MessyLabAdmin.Models
 
         public virtual Solution Solution { get; set; }
 
+        public virtual ICollection<Solution> SolutionHistory { get; set; }
+
     }
 }

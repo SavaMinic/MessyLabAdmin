@@ -28,6 +28,7 @@ namespace MessyLabAdmin.Models
         [Display(Name = "Checked and evaluated")]
         public bool IsEvaluated { get; set; }
 
+        public bool IsHistory { get; set; }
 
         [DataType(DataType.DateTime)]
         [Display(Name = "Last tested at")]

@@ -395,7 +395,7 @@ namespace MessyLabAdmin.Controllers
 
             var solutions = _context.Solutions
                 .Include(s => s.Student)
-                .Where(s => s.AssignmentID == id);
+                .Where(s => s.AssignmentID == id && !s.IsHistory);
             
             var downloadFileName = DateTime.Now.ToString("yyyyMMdd_HHmm") + "_resenja_" + id;
             // by default, empty zip file content

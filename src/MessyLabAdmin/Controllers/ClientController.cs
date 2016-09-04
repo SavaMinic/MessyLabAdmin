@@ -179,6 +179,7 @@ namespace MessyLabAdmin.Controllers
                 .Include(sa => sa.Assignment)
                 .Include(sa => sa.Solution)
                 .ThenInclude(s => s.AssignmentTestResults)
+                .Include(s => s.SolutionHistory)
                 .SingleOrDefault(sa => sa.StudentID == student.ID
                     && sa.Assignment.IsActive
                     && sa.Assignment.StartTime <= DateTime.Now
@@ -191,25 +192,24 @@ namespace MessyLabAdmin.Controllers
             // this is just in case, it's encoded
             code = code.ConvertUrlEncodedToNewLine();
 
-            if (studentAssignment.Solution == null)
+            // if there is already a solution, put it into history
+            if(studentAssignment.Solution != null)
             {
-                var solution = new Solution()
-                {
-                    Code = code,
-                    CreatedTime = DateTime.Now,
-                    Student = student,
-                    Assignment = studentAssignment.Assignment,
-                };
-                _context.Solutions.Add(solution);
-                studentAssignment.Solution = solution;
-                _context.StudentAssignments.Update(studentAssignment);
-            }
-            else
-            {
-                studentAssignment.Solution.Code = code;
-                studentAssignment.Solution.CreatedTime = DateTime.Now;
+                studentAssignment.Solution.IsHistory = true;
+                studentAssignment.SolutionHistory.Add(studentAssignment.Solution);
                 _context.Solutions.Update(studentAssignment.Solution);
             }
+            // create new solution
+            var solution = new Solution()
+            {
+                Code = code,
+                CreatedTime = DateTime.Now,
+                Student = student,
+                Assignment = studentAssignment.Assignment,
+            };
+            _context.Solutions.Add(solution);
+            studentAssignment.Solution = solution;
+            _context.StudentAssignments.Update(studentAssignment);
             _context.SaveChanges();
 
             // compile user code and test it out

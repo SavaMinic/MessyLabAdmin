@@ -37,9 +37,14 @@ namespace MessyLabAdmin.Controllers
                 return HttpNotFound();
             }
 
-            var studentAssignment = _context.StudentAssignments.Single(
-                sa => sa.AssignmentID == solution.AssignmentID && sa.StudentID == solution.StudentID
-            );
+            var studentAssignment = _context.StudentAssignments
+                .Include(sa => sa.SolutionHistory)
+                .ThenInclude(s => s.AssignmentTestResults)
+                .Include(sa => sa.Solution)
+                .ThenInclude(s => s.AssignmentTestResults)
+                .Single(
+                    sa => sa.AssignmentID == solution.AssignmentID && sa.StudentID == solution.StudentID
+                );
             if (studentAssignment != null)
             {
                 var variant = _context.AssignmentVariants.Single(
@@ -47,6 +52,7 @@ namespace MessyLabAdmin.Controllers
                 );
                 ViewBag.variant = variant;
                 ViewBag.testsCount = _context.AssignmentTests.Count(at => at.AssignmentVariantID == variant.ID);
+                ViewBag.studentAssignment = studentAssignment;
             }
             return View(solution);
         }

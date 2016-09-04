@@ -31,6 +31,7 @@ namespace MessyLabAdmin.Controllers
             ViewBag.latestSolutions = _context.Solutions
                 .Include(s => s.Assignment)
                 .Include(s => s.Student)
+                .Where(s => !s.IsHistory)
                 .OrderByDescending(s => s.CreatedTime)
                 .Take(10);
             return View();

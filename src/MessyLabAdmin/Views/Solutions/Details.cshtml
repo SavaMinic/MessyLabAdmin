@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Rešenje zadatka";
     ViewData["ActiveNav"] = "Assignments";
+    var isHistory = Context.Request.Query.ContainsKey("history") && bool.Parse(Context.Request.Query["history"]);
 }
 
 @if (TempData["isOK"] != null)
@@ -83,6 +84,8 @@
                             @Model.CreatedTime.ToString("dd.MM.yyyy HH:mm:ss")
                         </dd>
                     </dl>
+                    @if (!isHistory)
+                    {
                     <dl class="dl-horizontal">
                         <dt>
                             Status
@@ -95,17 +98,70 @@
                             else
                             {
                                 <span class="label label-warning">Nije pregledan</span>
-                            } 
-                            <a asp-action="ToggleEvaluated" asp-route-id="@Model.ID" 
-                               class="btn btn-sm @(Model.IsEvaluated ? "btn-default" : "btn-primary")">
+                            }
+                            <a asp-action="ToggleEvaluated" asp-route-id="@Model.ID"
+                                class="btn btn-sm @(Model.IsEvaluated ? "btn-default" : "btn-primary")">
                                 @(Model.IsEvaluated ? "Otkaži" : "Pregledaj")
                             </a>
+                        </dd>
+                    </dl>
+                    }
+                    @if (ViewBag.studentAssignment != null && isHistory)
+                    {
+                        <dl class="dl-horizontal">
+                            <dt>AKTIVNO rešenje</dt>
+                            <dd>
+                                <a asp-action="Details" asp-route-id="@ViewBag.studentAssignment.SolutionID">
+                                    @ViewBag.studentAssignment.Solution.CreatedTime
+                                </a>
+                            </dd>
+                        </dl>
+                    }
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Prethodna<br />rešenja
+                        </dt>
+                        <dd>
+                           @if (ViewBag.studentAssignment != null && ViewBag.studentAssignment.SolutionHistory.Count > 0)
+                           {
+                            <table class="table center table-striped">
+                                <tr>
+                                    <th>Poslato</th>
+                                    <th>Testovi</th>
+                                </tr>
+                                @foreach (Solution solution in ViewBag.studentAssignment.SolutionHistory)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (Model.ID != solution.ID)
+                                            {
+                                                <a asp-action="Details" asp-route-id="@solution.ID" asp-route-history="true">
+                                                    @solution.CreatedTime
+                                                </a>
+                                            } else
+                                            {
+                                                <span style="font-weight:bold;">@solution.CreatedTime</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @solution.AssignmentTestResults.Count(tr => tr.IsSuccess)
+                                            /
+                                            @solution.AssignmentTestResults.Count
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                           }
+                           else
+                           {
+                               <span>/</span>
+                           }
                         </dd>
                     </dl>
                 </div>
                 <div class="col-md-8">
                     <h2 class="column-header">
-                        Rešenje
+                        @(isHistory ? "Neaktivno rešenje" : "Rešenje")
                     </h2>
                     <dl class="dl-horizontal">
                         <dt>
@@ -149,10 +205,13 @@
                             {
                                 <span class="label label-warning">Testovi nisu izvršeni!</span>
                             }
-                            <a class="btn btn-sm btn-info" 
-                               asp-controller="Client" asp-action="ManualTestOfSolution" asp-route-id="@Model.ID">
-                                Pokreni testiranje
-                            </a>
+                            @if (!isHistory)
+                            {
+                                <a class="btn btn-sm btn-info" 
+                                   asp-controller="Client" asp-action="ManualTestOfSolution" asp-route-id="@Model.ID">
+                                    Pokreni testiranje
+                                </a>
+                            }
                         </dd>
                         <dt>Broj testova</dt>
                         <dd>@(ViewBag.testsCount ?? 0)</dd>
