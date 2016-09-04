@@ -174,27 +174,35 @@
                                     @if (item.Student.IsActive)
                                     {
                                         <span class="label label-primary">Aktivan</span>
-                                }
+                                    }
                                     else
                                     {
                                         <span class="label label-default">Neaktivan</span>
-                            }
+                                    }
                                 </td>
                                 <td>
                                     @if (item.Solution != null)
-                            {
+                                    {
 
                                         <a asp-controller="Solutions" asp-action="Details" asp-route-id="@item.SolutionID" class="btn-sm">
-                                            <span class="label label-success">Poslato</span>
-                                            @if (item.Solution.IsEvaluated)
-                            {
-                                                <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
-                                            }
-                                            else
-                                            {
-                                                <span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>
-                                            }
+                                            <span class="label label-success">Vidi rešenje</span>
                                         </a>
+                                        <br /><small>
+                                        @{ 
+                                            ICollection<AssignmentTestResult> results = item.Solution.AssignmentTestResults;
+                                        }
+                                        @results.Where(atr => atr.IsSuccess).Count()
+                                        /
+                                        @results.Count
+                                        </small>
+                                        @if (item.Solution.IsEvaluated)
+                                        {
+                                            <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>
+                                        }
                                     }
                                     else
                                     {

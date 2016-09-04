@@ -120,12 +120,29 @@ namespace MessyLabAdmin.Controllers
             // students for this assignment are paged
             IQueryable<StudentAssignment> studentAssignments = _context.StudentAssignments
                 .Include(sa => sa.Solution)
+                // this one doesn't make proper query, probably some bug in Entity Framework
+                //.ThenInclude(s => s.AssignmentTestResults)
                 .Include(sa => sa.Student)
                 .Where(sa => sa.AssignmentID == id);
 
             ViewBag.currentPage = page ?? 1;
             ViewBag.totalPages = studentAssignments.Count() / 10 + 1;
             ViewBag.studentAssignments =  studentAssignments.ToPagedList(page ?? 1, 10);
+
+            // AssignmentTestResults is not loaded properly, Entity framework has some bugs
+            foreach (StudentAssignment studentAssignment in ViewBag.studentAssignments)
+            {
+                if (studentAssignment.Solution != null)
+                {
+                    // load all tests
+                    var tests = assignment.AssignmentVariants.ElementAt(studentAssignment.AssignmentVariantIndex).AssignmentTests.ToList();
+                    // load all test results for these tests and this specific solution
+                    studentAssignment.Solution.AssignmentTestResults = _context.AssignmentTestResults
+                        .Where(atr => atr.SolutionID == studentAssignment.SolutionID 
+                                && tests.Exists(t => t.ID == atr.AssignmentTestID))
+                        .ToList();
+                }
+            }
 
             return View(assignment);
         }
