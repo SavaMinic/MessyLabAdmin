@@ -10,6 +10,7 @@ using Microsoft.AspNet.Http;
 using Microsoft.Net.Http.Headers;
 using System.IO;
 using MessyLabAdmin.Services;
+using System;
 
 namespace MessyLabAdmin.Controllers
 {
@@ -213,6 +214,7 @@ namespace MessyLabAdmin.Controllers
             // parse CSV file and insert students
             bool parsingOK = true;
             int addedStudentsCount = 0;
+            Dictionary<string, string> emailsForSending = new Dictionary<string, string>();
             using (var stream = studentsCSV.OpenReadStream())
             {
                 using (var reader = new StreamReader(stream))
@@ -241,6 +243,25 @@ namespace MessyLabAdmin.Controllers
                             student.PasswordHash = Utility.CalculatePasswordHash(student.Username, student.PasswordHash);
                             _context.Students.Add(student);
                             addedStudentsCount++;
+
+                            // prepare email for sending to students
+                            var requestCode = Utility.CalculatePasswordRequestCode();
+                            var content = string.Format(
+                                   "Hello {0},<br /><br />"
+                                   + "Your Messy Lab Account has been created.<br />"
+                                   + "Initial password: <b>{1}</b><br /><br />"
+                                   + "Click <a href=\"{2}\">here</a> to reset your initial password.<br /><br />"
+                                   + "We wish you good luck with your exams!<br /><br />"
+                               , student.Username, student.InitialPassword,
+                                Url.Action("PasswordReset", "Client", new { code = requestCode }, "http", Request.PathBase));
+                            emailsForSending.Add(student.DefaultEmail, content);
+
+                            // create a password reset request
+                            var reset = new PasswordReset();
+                            reset.Student = student;
+                            reset.CreatedTime = DateTime.Now;
+                            reset.RequestCode = requestCode;
+                            _context.PasswordResets.Add(reset);
                         }
                         catch (System.FormatException)
                         {
@@ -254,6 +275,11 @@ namespace MessyLabAdmin.Controllers
             if (parsingOK)
             {
                 _context.SaveChanges();
+                // send emails
+                foreach (KeyValuePair<string, string> entry in emailsForSending)
+                {
+                    _email.SendEmailAsync(entry.Key, "Messy Lab Account created", entry.Value);
+                }
             }
 
             TempData.Clear();
