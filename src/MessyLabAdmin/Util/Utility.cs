@@ -15,10 +15,10 @@ namespace MessyLabAdmin.Util
 
         public static string CalculatePasswordHash(string username, string pass)
         {
-            using (SHA1 sha1Hash = SHA1.Create())
+            using (SHA512 sha512 = SHA512.Create())
             {
                 // Convert the input string to a byte array and compute the hash.
-                byte[] data = sha1Hash.ComputeHash(Encoding.UTF8.GetBytes(username + pass));
+                byte[] data = sha512.ComputeHash(Encoding.UTF8.GetBytes(username + pass));
 
                 // Loop through each byte of the hashed data 
                 // and format each one as a hexadecimal string.
