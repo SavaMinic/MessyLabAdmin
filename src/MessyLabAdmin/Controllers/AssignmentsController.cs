@@ -257,7 +257,7 @@ namespace MessyLabAdmin.Controllers
                     {
                         StudentID = s.ID,
                         AssignmentID = assignment.ID,
-                        AssignmentVariantIndex = s.EnrollmentNumber % assignment.SelectEnrollmentNumberModulo
+                        AssignmentVariantIndex = (s.EnrollmentNumber + s.EnrollmentYear) % assignment.SelectEnrollmentNumberModulo
                 });
                 }
                 _context.SaveChanges();
@@ -349,7 +349,7 @@ namespace MessyLabAdmin.Controllers
                         {
                             StudentID = s.ID,
                             AssignmentID = assignment.ID,
-                            AssignmentVariantIndex = s.EnrollmentNumber % assignment.SelectEnrollmentNumberModulo
+                            AssignmentVariantIndex = (s.EnrollmentNumber + s.EnrollmentYear) % assignment.SelectEnrollmentNumberModulo
                         });
                     }
                 }
