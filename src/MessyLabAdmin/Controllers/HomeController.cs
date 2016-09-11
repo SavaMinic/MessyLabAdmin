@@ -37,11 +37,13 @@ namespace MessyLabAdmin.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult About()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Error()
         {
             return View();

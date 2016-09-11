@@ -212,7 +212,9 @@
                             </tr>
                         }
                     </table>
-                    @Html.Partial("_Pagination", new PaginationViewData(ViewBag.currentPage, ViewBag.totalPages))
+
+                    @Html.Partial("_Pagination", new PaginationViewData(ViewBag.currentPage, ViewBag.totalPages, "Details"))
+
                 </div>
             </div>
         </div>

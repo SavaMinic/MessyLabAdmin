@@ -8,7 +8,7 @@
         @if (Model.PreviousPage != null)
         {
             <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index", new { page = Model.PreviousPage})" aria-label="Prethodna">
+                <a class="page-link" href="@Url.Action(Model.SelectedAction, new { page = Model.PreviousPage})" aria-label="Prethodna">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">Prethodna</span>
                 </a>
@@ -18,7 +18,7 @@
         @for (int i = Model.StartPage; i <= Model.EndPage; i++)
         {
             <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { page = i})">
+                <a class="page-link" href="@Url.Action(Model.SelectedAction, new { page = i})">
                 @i
                 </a>
             </li>
@@ -27,7 +27,7 @@
         @if (Model.NextPage != null)
         {
             <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index", new { page = Model.NextPage })" aria-label="Sledeća">
+                <a class="page-link" href="@Url.Action(Model.SelectedAction, new { page = Model.NextPage })" aria-label="Sledeća">
                     <span aria-hidden="true">&raquo;</span>
                     <span class="sr-only">Sledeća</span>
                 </a>

@@ -27,10 +27,13 @@ namespace MessyLabAdmin.Util
         public int StartPage { get; private set; }
         public int EndPage { get; private set; }
 
-        public PaginationViewData(int currentPage, int totalPages)
+        public string SelectedAction { get; private set; }
+
+        public PaginationViewData(int currentPage, int totalPages, string selectedAction = "Index")
         {
             CurrentPage = currentPage;
             TotalPages = totalPages;
+            SelectedAction = selectedAction;
 
             if (CurrentPage > 1) PreviousPage = CurrentPage - 1;
             if (CurrentPage < TotalPages) NextPage = CurrentPage + 1;
