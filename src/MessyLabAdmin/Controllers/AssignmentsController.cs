@@ -85,7 +85,7 @@ namespace MessyLabAdmin.Controllers
             }
 
             ViewBag.currentPage = page ?? 1;
-            ViewBag.totalPages = assignments.Count() / 10 + 1;
+            ViewBag.totalPages = (int)Math.Ceiling(assignments.Count() / 10f);
             ViewBag.allStatusTypes = GetAllStatusType();
             ViewBag.allCreatedByUsers = GetAllCreatedByUsers();
 
@@ -126,7 +126,7 @@ namespace MessyLabAdmin.Controllers
                 .Where(sa => sa.AssignmentID == id);
 
             ViewBag.currentPage = page ?? 1;
-            ViewBag.totalPages = studentAssignments.Count() / 10 + 1;
+            ViewBag.totalPages = (int)Math.Ceiling(studentAssignments.Count() / 10f);
             ViewBag.studentAssignments =  studentAssignments.ToPagedList(page ?? 1, 10);
 
             // AssignmentTestResults is not loaded properly, Entity framework has some bugs

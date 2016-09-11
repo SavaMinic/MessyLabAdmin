@@ -67,7 +67,7 @@ namespace MessyLabAdmin.Controllers
             }
 
             ViewBag.currentPage = page ?? 1;
-            ViewBag.totalPages = students.Count() / 10 + 1;
+            ViewBag.totalPages = (int)Math.Ceiling(students.Count() / 10f);
             ViewBag.statusData = new List<SelectListItem>()
             {
                 new SelectListItem() { Value = "0", Text = "Neaktivan" },
@@ -260,23 +260,27 @@ namespace MessyLabAdmin.Controllers
                             addedStudentsCount++;
 
                             // prepare email for sending to students
-                            var requestCode = Utility.CalculatePasswordRequestCode();
-                            var content = string.Format(
-                                   "Hello {0},<br /><br />"
-                                   + "Your Messy Lab Account has been created.<br />"
-                                   + "Initial password: <b>{1}</b><br /><br />"
-                                   + "Click <a href=\"{2}\">here</a> to reset your initial password.<br /><br />"
-                                   + "We wish you good luck with your exams!<br /><br />"
-                               , student.Username, student.InitialPassword,
-                                Url.Action("PasswordReset", "Client", new { code = requestCode }, "http", Request.PathBase));
-                            emailsForSending.Add(student.DefaultEmail, content);
 
-                            // create a password reset request
-                            var reset = new PasswordReset();
-                            reset.Student = student;
-                            reset.CreatedTime = DateTime.Now;
-                            reset.RequestCode = requestCode;
-                            _context.PasswordResets.Add(reset);
+                            if (!emailsForSending.ContainsKey(student.DefaultEmail))
+                            {
+                                var requestCode = Utility.CalculatePasswordRequestCode();
+                                var content = string.Format(
+                                       "Hello {0},<br /><br />"
+                                       + "Your Messy Lab Account has been created.<br />"
+                                       + "Initial password: <b>{1}</b><br /><br />"
+                                       + "Click <a href=\"{2}\">here</a> to reset your initial password.<br /><br />"
+                                       + "We wish you good luck with your exams!<br /><br />"
+                                   , student.Username, student.InitialPassword,
+                                    Url.Action("PasswordReset", "Client", new { code = requestCode }, "http", Request.PathBase));
+                                emailsForSending.Add(student.DefaultEmail, content);
+
+                                // create a password reset request
+                                var reset = new PasswordReset();
+                                reset.Student = student;
+                                reset.CreatedTime = DateTime.Now;
+                                reset.RequestCode = requestCode;
+                                _context.PasswordResets.Add(reset);
+                            }
                         }
                         catch (System.FormatException)
                         {

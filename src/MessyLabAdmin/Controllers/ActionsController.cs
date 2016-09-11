@@ -49,7 +49,7 @@ namespace MessyLabAdmin.Controllers
             }
             
             ViewBag.currentPage = page ?? 1;
-            ViewBag.totalPages = actions.Count() / 10 + 1;
+            ViewBag.totalPages = (int)Math.Ceiling(actions.Count() / 10f);
             ViewBag.allActionTypes = GetAllActionTypes();
 
             return View(actions.ToPagedList(page ?? 1, 10));
