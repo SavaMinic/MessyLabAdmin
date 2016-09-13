@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
+using MessyLabAdmin.Models;
 
 namespace MessyLabAdmin.ViewModels.Manage
 {
@@ -17,5 +18,7 @@ namespace MessyLabAdmin.ViewModels.Manage
         public bool TwoFactor { get; set; }
 
         public bool BrowserRemembered { get; set; }
+
+        public IList<ApplicationUser> users { get; set; }
     }
 }

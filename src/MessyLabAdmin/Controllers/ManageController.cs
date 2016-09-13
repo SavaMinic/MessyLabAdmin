@@ -42,12 +42,12 @@ namespace MessyLabAdmin.Controllers
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
-                : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
+                message == ManageMessageId.ChangePasswordSuccess ? "Vasa lozinka je uspesno promenjena."
+                : message == ManageMessageId.SetPasswordSuccess ? "Vasa lozinka je uspesno postavljena."
+                : message == ManageMessageId.SetTwoFactorSuccess ? "Vas provajder dvofaktorske autentifikacije je postavlje."
+                : message == ManageMessageId.Error ? "Greska! Pokusajte ponovo."
+                : message == ManageMessageId.AddPhoneSuccess ? "Broj telefona je uspesno dodat."
+                : message == ManageMessageId.RemovePhoneSuccess ? "Broj telefona je uspesno uklonjen."
                 : "";
 
             var user = await GetCurrentUserAsync();
@@ -57,7 +57,8 @@ namespace MessyLabAdmin.Controllers
                 PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
                 TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
                 Logins = await _userManager.GetLoginsAsync(user),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
+                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
+                users = _userManager.Users.ToList()
             };
             return View(model);
         }
@@ -102,7 +103,7 @@ namespace MessyLabAdmin.Controllers
             // Generate the token and send it
             var user = await GetCurrentUserAsync();
             var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
-            await _smsSender.SendSmsAsync(model.PhoneNumber, "Your security code is: " + code);
+            await _smsSender.SendSmsAsync(model.PhoneNumber, "Vas kod je: " + code);
             return RedirectToAction(nameof(VerifyPhoneNumber), new { PhoneNumber = model.PhoneNumber });
         }
 
@@ -265,9 +266,9 @@ namespace MessyLabAdmin.Controllers
         public async Task<IActionResult> ManageLogins(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
-                message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
-                : message == ManageMessageId.AddLoginSuccess ? "The external login was added."
-                : message == ManageMessageId.Error ? "An error has occurred."
+                message == ManageMessageId.RemoveLoginSuccess ? "Nalog za spoljasnje prijvaljivanje je uklonjen."
+                : message == ManageMessageId.AddLoginSuccess ? "Nalog za spoljasnje prijvaljivanje je dodat."
+                : message == ManageMessageId.Error ? "Greska! Pokusajte ponovo."
                 : "";
             var user = await GetCurrentUserAsync();
             if (user == null)

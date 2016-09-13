@@ -1,6 +1,6 @@
 ﻿@model SendCodeViewModel
 @{
-    ViewData["Title"] = "Send Verification Code";
+    ViewData["Title"] = "Pošalji verifikacioni kod";
 }
 
 <h2>@ViewData["Title"].</h2>
@@ -9,9 +9,9 @@
     <input asp-for="RememberMe" type="hidden" />
     <div class="row">
         <div class="col-md-8">
-            Select Two-Factor Authentication Provider:
+            Izaberite način za autentifikaciju:
             <select asp-for="SelectedProvider" asp-items="Model.Providers"></select>
-            <button type="submit" class="btn btn-default">Submit</button>
+            <button type="submit" class="btn btn-default">Izaberi</button>
         </div>
     </div>
 </form>
