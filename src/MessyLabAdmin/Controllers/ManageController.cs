@@ -45,6 +45,7 @@ namespace MessyLabAdmin.Controllers
                 message == ManageMessageId.ChangePasswordSuccess ? "Vasa lozinka je uspesno promenjena."
                 : message == ManageMessageId.SetPasswordSuccess ? "Vasa lozinka je uspesno postavljena."
                 : message == ManageMessageId.SetTwoFactorSuccess ? "Vas provajder dvofaktorske autentifikacije je postavlje."
+                : message == ManageMessageId.TestUserError ? "Greska! TESTNI KORISNIK NE MOZE PROMENITI LOZINKU."
                 : message == ManageMessageId.Error ? "Greska! Pokusajte ponovo."
                 : message == ManageMessageId.AddPhoneSuccess ? "Broj telefona je uspesno dodat."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Broj telefona je uspesno uklonjen."
@@ -196,8 +197,13 @@ namespace MessyLabAdmin.Controllers
         //
         // GET: /Manage/ChangePassword
         [HttpGet]
-        public IActionResult ChangePassword()
+        public async Task<IActionResult> ChangePassword()
         {
+            var user = await GetCurrentUserAsync();
+            if (user == null || user.Email == "test@test.com")
+            {
+                return RedirectToAction(nameof(Index), new { Message = ManageMessageId.TestUserError });
+            }
             return View();
         }
 
@@ -214,6 +220,10 @@ namespace MessyLabAdmin.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
+                if (user.Email == "test@test.com")
+                {
+                    return RedirectToAction(nameof(Index), new { Message = ManageMessageId.TestUserError });
+                }
                 var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
@@ -230,8 +240,13 @@ namespace MessyLabAdmin.Controllers
         //
         // GET: /Manage/SetPassword
         [HttpGet]
-        public IActionResult SetPassword()
+        public async Task<IActionResult> SetPassword()
         {
+            var user = await GetCurrentUserAsync();
+            if (user == null || user.Email == "test@test.com")
+            {
+                return RedirectToAction(nameof(Index), new { Message = ManageMessageId.TestUserError });
+            }
             return View();
         }
 
@@ -249,6 +264,10 @@ namespace MessyLabAdmin.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
+                if (user.Email == "test@test.com")
+                {
+                    return RedirectToAction(nameof(Index), new { Message = ManageMessageId.TestUserError });
+                }
                 var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
                 if (result.Succeeded)
                 {
@@ -336,6 +355,7 @@ namespace MessyLabAdmin.Controllers
             SetPasswordSuccess,
             RemoveLoginSuccess,
             RemovePhoneSuccess,
+            TestUserError,
             Error
         }
 
